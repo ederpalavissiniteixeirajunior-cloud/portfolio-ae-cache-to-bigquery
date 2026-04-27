@@ -1,0 +1,16 @@
+# Python e Ambientes Virtuais
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Segredos e Chaves (CRÍTICO)
+.env
+*.json
+gcp-key.json
+
+# dbt (pastas de log e compilação)
+target/
+dbt_packages/
+logs/
+profiles.yml
