@@ -1,0 +1,95 @@
+with source as (
+    select * from {{ source('raw_cache', 'produtos') }}
+),
+
+renamed as (
+    select
+        
+        cast(ID as string) as ID,
+        cast(classificacaoFiscal as int64) as classificacaoFiscal,
+        cast(codCor as int64) as codCor,
+        cast(codEmpresa as int64) as codEmpresa,
+        cast(codEngenhariaConfec as string) as codEngenhariaConfec,
+        cast(codEngenhariaPadrao as string) as codEngenhariaPadrao,
+        cast(codEngenhariaTextil as string) as codEngenhariaTextil,
+        cast(codProduto as int64) as codProduto,
+        cast(codProdutoPai as int64) as codProdutoPai,
+        cast(codTamanho as int64) as codTamanho,
+        cast(codSortimento as string) as codSortimento,
+        cast(complementoCor as string) as complementoCor,
+        cast(dataHoraGeracao as datetime) as dataHoraGeracao,
+        cast(descProdutoEntrada as string) as descProdutoEntrada,
+        cast(descProdutoGen as string) as descProdutoGen,
+        cast(descProdutoSaida as string) as descProdutoSaida,
+        cast(descricaoCor as string) as descricaoCor,
+        cast(finalidade as string) as finalidade,
+        cast(idEngenhariaConfec as string) as idEngenhariaConfec,
+        cast(idEngenhariaPadrao as string) as idEngenhariaPadrao,
+        cast(idEngenhariaTextil as string) as idEngenhariaTextil,
+        cast(idProduto as string) as idProduto,
+        cast(mascEntradaNivel01 as string) as mascEntradaNivel01,
+        cast(mascEntradaNivel02 as string) as mascEntradaNivel02,
+        cast(mascEntradaNivel03 as string) as mascEntradaNivel03,
+        cast(mascEntradaNivel04 as string) as mascEntradaNivel04,
+        cast(mascEntradaNivel05 as string) as mascEntradaNivel05,
+        cast(mascEntradaNivel06 as string) as mascEntradaNivel06,
+        cast(mascEntradaNivel07 as string) as mascEntradaNivel07,
+        cast(mascEntradaNivel08 as string) as mascEntradaNivel08,
+        cast(mascEntradaNivel09 as string) as mascEntradaNivel09,
+        cast(mascEntradaNivel10 as string) as mascEntradaNivel10,
+        cast(mascEntradaNivel11 as string) as mascEntradaNivel11,
+        cast(mascEntradaNivel12 as string) as mascEntradaNivel12,
+        cast(mascEntradaNivel13 as string) as mascEntradaNivel13,
+        cast(mascEntradaNivel14 as string) as mascEntradaNivel14,
+        cast(mascEntradaNivel15 as string) as mascEntradaNivel15,
+        cast(mascEntradaNivel16 as string) as mascEntradaNivel16,
+        cast(mascEntradaNivel17 as string) as mascEntradaNivel17,
+        cast(mascEntradaNivel18 as string) as mascEntradaNivel18,
+        cast(mascEntradaNivel19 as string) as mascEntradaNivel19,
+        cast(mascEntradaNivel20 as string) as mascEntradaNivel20,
+        cast(mascSaidaNivel01 as string) as mascSaidaNivel01,
+        cast(mascSaidaNivel02 as string) as mascSaidaNivel02,
+        cast(mascSaidaNivel03 as string) as mascSaidaNivel03,
+        cast(mascSaidaNivel04 as string) as mascSaidaNivel04,
+        cast(mascSaidaNivel05 as string) as mascSaidaNivel05,
+        cast(mascSaidaNivel06 as string) as mascSaidaNivel06,
+        cast(mascSaidaNivel07 as string) as mascSaidaNivel07,
+        cast(mascSaidaNivel08 as string) as mascSaidaNivel08,
+        cast(mascSaidaNivel09 as string) as mascSaidaNivel09,
+        cast(mascSaidaNivel10 as string) as mascSaidaNivel10,
+        cast(mascSaidaNivel11 as string) as mascSaidaNivel11,
+        cast(mascSaidaNivel12 as string) as mascSaidaNivel12,
+        cast(mascSaidaNivel13 as string) as mascSaidaNivel13,
+        cast(mascSaidaNivel14 as string) as mascSaidaNivel14,
+        cast(mascSaidaNivel15 as string) as mascSaidaNivel15,
+        cast(mascSaidaNivel16 as string) as mascSaidaNivel16,
+        cast(mascSaidaNivel17 as string) as mascSaidaNivel17,
+        cast(mascSaidaNivel18 as string) as mascSaidaNivel18,
+        cast(mascSaidaNivel19 as string) as mascSaidaNivel19,
+        cast(mascSaidaNivel20 as string) as mascSaidaNivel20,
+        cast(mascaraEntrada as string) as mascaraEntrada,
+        cast(mascaraSaida as string) as mascaraSaida,
+        cast(ncm as string) as ncm,
+        cast(origem as string) as origem,
+        cast(pesoBruto as string) as pesoBruto,
+        cast(pesoLiquido as string) as pesoLiquido,
+        cast(razaoEmpresa as string) as razaoEmpresa,
+        cast(statusEntrada as string) as statusEntrada,
+        cast(statusSaida as string) as statusSaida,
+        cast(tamanho as string) as tamanho,
+        cast(tipo as string) as tipo,
+        cast(unidadeMedidaCompra as string) as unidadeMedidaCompra,
+        cast(unidadeMedidaEstoque as string) as unidadeMedidaEstoque,
+        cast(unidadeMedidaVenda as string) as unidadeMedidaVenda,
+
+        cast(extracted_at as timestamp) as extracted_at
+
+
+
+
+
+        
+    from source
+)
+
+select * from renamed
