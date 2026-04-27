@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw_cache
+    database: portfolio-ae-vendas
+    schema: raw
+    tables:
+      - name: clientes
+      - name: produtos
+      - name: representantes
+      - name: pedidos
