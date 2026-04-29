@@ -1,0 +1,62 @@
+with source as (
+    select * from {{ source('raw_cache', 'vendas_itens') }}
+),
+
+renamed as (
+    select
+        
+        cast(ID as string) as ID,
+        cast(codColecao as string) as codColecao,
+        cast(codEmpresa as int64) as codEmpresa,
+        cast(codEstatisticaFaturamentoItem as string) as codEstatisticaFaturamentoItem,
+        cast(codEstatisticaVendasItem as string) as codEstatisticaVendasItem,
+        cast(codGrade as string) as codGrade,
+        cast(codNota as int64) as codNota,
+        cast(codPedido as int64) as codPedido,
+        cast(codProduto as int64) as codProduto,
+        cast(codSitDuplicataItem as string) as codSitDuplicataItem,
+        cast(codTipoFaturamento as string) as codTipoFaturamento,
+        cast(custoMedio as float64) as custoMedio,
+        cast(dataEmissao as date) as dataEmissao,
+        cast(dataHoraGeracao as datetime) as dataHoraGeracao,
+        cast(descColecao as string) as descColecao,
+        cast(descGrade as string) as descGrade,
+        cast(descProdutoGen as string) as descProdutoGen,
+        cast(descProdutoSaida as string) as descProdutoSaida,
+        cast(estatisticaFaturamentoItem as string) as estatisticaFaturamentoItem,
+        cast(estatisticaVendasItem as string) as estatisticaVendasItem,
+        cast(idEmpresa as string) as idEmpresa,
+        cast(idNotaFiscal as string) as idNotaFiscal,
+        cast(idNotaFiscalItem as string) as idNotaFiscalItem,
+        cast(lotes as string) as lotes,
+        cast(mascara as string) as mascara,
+        cast(natOperacaoItem as string) as natOperacaoItem,
+        safe_cast(safe_cast(qtdProduto as float64) as int64) as qtdProduto,
+        cast(razaoEmpresa as string) as razaoEmpresa,
+        cast(seqItem as int64) as seqItem,
+        safe_cast(safe_cast(seqItemPedido as float64) as int64) as seqItemPedido,
+        cast(situacaoDuplicataItem as string) as situacaoDuplicataItem,
+        cast(tipoFaturamento as string) as tipoFaturamento,
+        cast(tipoNotaItem as string) as tipoNotaItem,
+        cast(unidadeMedida as string) as unidadeMedida,
+        {{ convert_money('valorBaseCOFINS') }} as valorBaseCOFINS,
+        {{ convert_money('valorBaseICMS') }} as valorBaseICMS,
+        {{ convert_money('valorBaseICMSST') }} as valorBaseICMSST,
+        {{ convert_money('valorBaseIPI') }} as valorBaseIPI,
+        {{ convert_money('valorBasePIS') }} as valorBasePIS,
+        {{ convert_money('valorCOFINS') }} as valorCOFINS,
+        {{ convert_money('valorDesconto') }} as valorDesconto,
+        {{ convert_money('valorICMS') }} as valorICMS,
+        {{ convert_money('valorICMSST') }} as valorICMSST,
+        {{ convert_money('valorIPI') }} as valorIPI,
+        {{ convert_money('valorLiqProduto') }} as valorLiqProduto,
+        {{ convert_money('valorPIS') }} as valorPIS,
+        {{ convert_money('valorTotalProduto') }} as valorTotalProduto,
+        {{ convert_money('valorUnitario') }} as valorUnitario,
+        {{ convert_money('vlrItem') }} as vlrItem,
+        cast(extracted_at as timestamp) as extracted_at
+        
+        from source
+)
+
+select * from renamed

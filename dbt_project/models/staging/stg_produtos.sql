@@ -82,7 +82,8 @@ renamed as (
         cast(unidadeMedidaEstoque as string) as unidadeMedidaEstoque,
         cast(unidadeMedidaVenda as string) as unidadeMedidaVenda,
 
-        cast(extracted_at as timestamp) as extracted_at
+        cast(extracted_at as timestamp) as extracted_at,
+        {{ generate_audit_columns() }}
 
 
 

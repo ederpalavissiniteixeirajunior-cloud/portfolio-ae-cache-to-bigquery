@@ -5,10 +5,10 @@ with source as (
 renamed as (
     select
         cast(ID as string) as ID,
-        cast(CEP as string) as CEP,
-        cast(CNPJCPF as string) as CNPJCPF,
-        cast(GrupoCNPJ as string) as GrupoCNPJ,
-        cast(celularDadosComplementares as string) as celularDadosComplementares,
+        {{ mask_pii_info('CEP') }} as CEP,
+        {{ mask_pii_info('CNPJCPF') }} as CNPJCPF,
+        {{ mask_pii_info('GrupoCNPJ') }} as GrupoCNPJ,
+        {{ mask_pii_info('celularDadosComplementares') }} as celularDadosComplementares,
         cast(cidade as string) as cidade,
         cast(clienteDesde as date) as clienteDesde,
         safe_cast(safe_cast(codCliente as float64) as int64) as codCliente,
@@ -21,22 +21,23 @@ renamed as (
         cast(codRepresentante6 as string) as codRepresentante6,
         cast(codSituacao as string) as codSituacao,
         cast(dataHoraGeracao as datetime) as dataHoraGeracao,
-        cast(descricaoGrupoCNPJ as string) as descricaoGrupoCNPJ,
-        cast(email as string) as demail,
-        cast(endereco as string) as endereco,
+        {{ mask_pii_info('descricaoGrupoCNPJ') }} as descricaoGrupoCNPJ,
+        {{ mask_pii_info('email', 'email') }} as email,
+        {{ mask_pii_info('endereco') }} as endereco,
         cast(estado as string) as estado,
         cast(geoCliente as string) as geoCliente,
         cast(idCliente as string) as idCliente,
         cast(inscEstadual as string) as inscEstadual,
-        cast(nomeFantasia as string) as nomeFantasia,
+        {{ mask_pii_info('nomeFantasia') }} as nomeFantasia,
         cast(pais as string) as pais,
         cast(ramoAtividade as string) as ramoAtividade,
-        cast(razao as string) as razao,
-        cast(razaoEmpresa as string) as razaoEmpresa,
+        {{ mask_pii_info('razao', 'name') }} as razao,
+        {{ mask_pii_info('razaoEmpresa', 'name') }} as razaoEmpresa,
         cast(regiao as string) as regiao,
         cast(situacao as string) as situacao,
-        cast(telefone as string) as telefone,
-        cast(extracted_at as datetime) as extracted_at
+        {{ mask_pii_info('telefone') }} as telefone,
+        cast(extracted_at as datetime) as extracted_at,
+        {{ generate_audit_columns() }}
 
     from source
 )

@@ -49,7 +49,8 @@ renamed as (
         cast(tabelaPreco as string) as tabelaPreco,
         cast(nomeOperador as string) as nomeOperador,
         
-        cast(extracted_at as timestamp) as ingerido_em_timestamp
+        cast(extracted_at as datetime) as extracted_at,
+        {{ generate_audit_columns() }}
 
     from source
 )

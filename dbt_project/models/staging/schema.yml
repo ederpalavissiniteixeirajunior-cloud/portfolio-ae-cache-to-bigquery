@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: stg_clientes
+    description: "Cleaned and anonymized customer data from InterSystems Caché legacy system."
+    columns:
+      - name: ID
+        description: "Primary key of the customer."
+        tests:
+          - unique
+          - not_null
+
+      - name: codCliente
+        description: "Customer code handled with safe_casting."
+        tests:
+          - not_null
+
+      - name: email
+        description: "Customer email (Masked in DEV for GDPR/LGPD compliance)."
+        tests:
+          - not_null
