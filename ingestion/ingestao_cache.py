@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from faker import Faker
 from google.cloud import bigquery
 
-# ==================== CONFIGURAÇÕES DE LOG E AMBIENTE ====================
+# ==================== LOG AND ENVIRONMENT SETTINGS ====================
 load_dotenv()
 logging.basicConfig(
     level=logging.INFO, 
@@ -17,12 +17,12 @@ logger = logging.getLogger(__name__)
 
 CHUNK_SIZE = 50000 
 
-# ==================== FUNÇÕES DE TRATAMENTO E CARGA ====================
+# ==================== TREATMENT AND LOAD FUNCTIONS ====================
 
 def anonimizar_lote(df):
     """
-    Função temporariamente desativada para teste de integridade.
-    Retorna o DataFrame original sem alterações.
+    Function temporarily disabled for integrity testing.
+    Returns the original DataFrame unchanged.
     """
     
     # for col in df.columns:
@@ -31,16 +31,16 @@ def anonimizar_lote(df):
     return df
 
 def obter_intervalo_datas(cursor, tabela, coluna_data):
-    """Busca as datas mínima e máxima para processamento mensal."""
+    """Search for the minimum and maximum dates for monthly processing."""
     try:
         cursor.execute(f"SELECT MIN({coluna_data}), MAX({coluna_data}) FROM {tabela}")
         return cursor.fetchone()
     except Exception as e:
-        logger.error(f"Erro ao buscar datas na tabela {tabela}: {e}")
+        logger.error(f"Error fetching dates from the table {tabela}: {e}")
         return None, None
 
 def carregar_lote_bq(client, df, tabela_destino, modo_escrita):
-    """Faz o streaming do DataFrame para o BigQuery com confirmação."""
+    """Streams the DataFrame to BigQuery with confirmation."""
     dataset_id = os.getenv('GCP_DATASET_RAW')
     project_id = os.getenv('GCP_PROJECT_ID')
     table_id = f"{project_id}.{dataset_id}.{tabela_destino}"
@@ -50,30 +50,30 @@ def carregar_lote_bq(client, df, tabela_destino, modo_escrita):
     try:
         job = client.load_table_from_dataframe(df, table_id, job_config=job_config)
         job.result() 
-        logger.info(f"    Lote de {len(df)} linhas enviado para {tabela_destino} ({modo_escrita})")
+        logger.info(f"    Lot of {len(df)} lines sent to {tabela_destino} ({modo_escrita})")
     except Exception as e:
-        logger.error(f"   Falha no carregamento do BigQuery: {e}")
+        logger.error(f"   BigQuery loading failure: {e}")
         raise
 
-# ==================== ORQUESTRADOR DE JOBS ====================
+# ==================== Job Orchestrator ====================
 
 def processar_job(job, bq_client, cache_conn):
     tabela_origem = job['tabela_origem']
     tabela_destino = job['tabela_destino']
-    logger.info(f" INICIANDO JOB: {tabela_origem} -> {tabela_destino}")
+    logger.info(f" STARTING JOB: {tabela_origem} -> {tabela_destino}")
     
     cursor = cache_conn.cursor()
     modo_escrita = "WRITE_TRUNCATE" 
     total_linhas_job = 0
 
     try:
-        # CENÁRIO A: Processamento Mensal (Tabelas Fato / Grandes)
+        # SCENARIO A: Monthly Processing (Fact / Large Tables)
         if job.get('particionamento_mensal'):
             col_data = job['coluna_filtro']
             data_min, data_max = obter_intervalo_datas(cursor, tabela_origem, col_data)
             
             if not data_min or not data_max:
-                logger.warning(f" Tabela {tabela_origem} vazia ou sem datas. Pulando...")
+                logger.warning(f" Table {tabela_origem} empty or without dates. Skipping...")
                 return
 
             meses = pd.date_range(start=data_min, end=data_max, freq='MS')
@@ -87,16 +87,16 @@ def processar_job(job, bq_client, cache_conn):
                     chunk = anonimizar_lote(chunk)
                     chunk['extracted_at'] = datetime.now().isoformat()
                     
-                    # Normalização
+                    # Normalization
                     chunk = chunk.astype(str).replace(['None', 'nan', 'NaN'], None)
                     
                     carregar_lote_bq(bq_client, chunk, tabela_destino, modo_escrita)
                     total_linhas_job += len(chunk)
                     modo_escrita = "WRITE_APPEND"
                 
-                logger.info(f"    Mês {inicio_mes.strftime('%Y-%m')} concluído.")
+                logger.info(f"    Month {inicio_mes.strftime('%Y-%m')} concluded.")
 
-        # CENÁRIO B: Carga Direta (Tabelas Dimensão ou menores)
+        # SCENARIO B: Direct Load (Dimension Tables or smaller)
         else:
             df_iter = pd.read_sql(f"SELECT * FROM {tabela_origem}", cache_conn, chunksize=CHUNK_SIZE)
             
@@ -104,20 +104,20 @@ def processar_job(job, bq_client, cache_conn):
                 chunk = anonimizar_lote(chunk)
                 chunk['extracted_at'] = datetime.now().isoformat()
                 
-                # Normalização
+                # Normalization
                 chunk = chunk.astype(str).replace(['None', 'nan', 'NaN'], None)
                 
                 carregar_lote_bq(bq_client, chunk, tabela_destino, modo_escrita)
                 total_linhas_job += len(chunk)
                 modo_escrita = "WRITE_APPEND"
 
-        logger.info(f" SUCESSO: {tabela_destino} finalizada com {total_linhas_job:,} linhas.")
+        logger.info(f" SUCCESS: {tabela_destino} completed with {total_linhas_job:,} lines.")
         print("-" * 60)
 
     except Exception as e:
-        logger.error(f" Falha crítica no Job {tabela_destino}: {e}")
+        logger.error(f" Critical failure in the Job {tabela_destino}: {e}")
 
-# ==================== DEFINIÇÃO DA MALHA DE DADOS ====================
+# ==================== DEFINITION OF THE DATA MESH ====================
 
 JOBS_CONFIG = [
     {'tabela_origem': 'dw_fat.Cliente', 'tabela_destino': 'clientes'},
@@ -127,7 +127,7 @@ JOBS_CONFIG = [
 ]
 
 if __name__ == "__main__":
-    logger.info("Iniciando Motor de Ingestão (Modo Teste - Sem Faker): Caché -> BigQuery RAW")
+    logger.info("Starting Ingestion Engine: Caché -> BigQuery RAW")
     
     client_bq = bigquery.Client()
     dsn_cache = os.getenv('CACHE_DSN')
@@ -136,6 +136,6 @@ if __name__ == "__main__":
         with pyodbc.connect(f'DSN={dsn_cache}', autocommit=True) as conn:
             for config in JOBS_CONFIG:
                 processar_job(config, client_bq, conn)
-        logger.info(" PROCESSO GERAL FINALIZADO.")
+        logger.info(" GENERAL PROCESS COMPLETED.")
     except Exception as e:
-        logger.error(f" Erro de conexão com o banco de origem: {e}")
+        logger.error(f" Connection error with the source database: {e}")
