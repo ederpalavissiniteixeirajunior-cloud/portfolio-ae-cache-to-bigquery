@@ -10,3 +10,7 @@ sources:
       - name: representantes
       - name: pedidos
       - name: vendas_itens
+      - name: estoque_produto
+      - name: tabela_preco_item
+      - name: contas_receber
+      - name: nota_fiscal

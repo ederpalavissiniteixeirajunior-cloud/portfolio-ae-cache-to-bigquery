@@ -45,7 +45,8 @@ renamed as (
         {{ convert_money('valorUnitario') }} as valorUnitario,
         {{ convert_money('valorUnitarioLiquido') }} as valorUnitarioLiquido,
         {{ convert_money('valorUnitarioME') }} as valorUnitarioME,
-        cast(extracted_at as timestamp) as extracted_at
+        cast(extracted_at as timestamp) as extracted_at,
+        {{ generate_audit_columns() }}
         
         from source
 )
