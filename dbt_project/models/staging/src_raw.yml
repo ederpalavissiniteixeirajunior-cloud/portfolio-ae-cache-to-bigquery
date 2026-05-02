@@ -9,3 +9,4 @@ sources:
       - name: produtos
       - name: representantes
       - name: pedidos
+      - name: vendas_itens
