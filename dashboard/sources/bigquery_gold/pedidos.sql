@@ -1,0 +1,1 @@
+select * from `portfolio-ae-vendas.gold.fct_sales`
