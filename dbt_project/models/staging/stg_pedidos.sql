@@ -5,7 +5,7 @@ with source as (
 renamed as (
     select
         
-        safe_cast(safe_cast(ID as float64) as int64) as ID,
+        cast(ID as string) as ID,
         safe_cast(safe_cast(codAtendente as float64) as int64) as codAtendente,
         safe_cast(safe_cast(codCliente as float64) as int64) as codCliente,
         safe_cast(safe_cast(codEmpresa as float64) as int64) as codEmpresa,

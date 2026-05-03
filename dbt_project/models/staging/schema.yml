@@ -1,21 +1,48 @@
 version: 2
 
 models:
-  - name: stg_clientes
-    description: "Cleaned and anonymized customer data from InterSystems Caché legacy system."
+  - name: stg_customers
+    description: "Staging model for customer data from the legacy InterSystems Caché system. This layer handles initial type casting, renaming, and PII masking for GDPR/LGPD compliance."
     columns:
-      - name: ID
-        description: "Primary key of the customer."
+      - name: nk_customer
+        description: "The Natural Key (ID) from the source system."
         tests:
           - unique
           - not_null
 
-      - name: codCliente
-        description: "Customer code handled with safe_casting."
+      - name: cd_customer
+        description: "Business identification code for the customer. Used as the foundation for Surrogate Keys."
         tests:
           - not_null
 
-      - name: email
-        description: "Customer email (Masked in DEV for GDPR/LGPD compliance)."
+      - name: cd_company
+        description: "Company identifier. In this project, we primarily filter for Company 1."
         tests:
           - not_null
+          - accepted_values:
+              values: [1]
+              quote: false
+
+      - name: cd_cpf_cnpj
+        description: "Customer tax ID (CPF or CNPJ), masked via custom macro for security."
+        tests:
+          - not_null
+
+      - name: ds_email
+        description: "Customer email address, anonymized using Faker logic during ingestion or via dbt macro."
+
+      - name: dt_start_customer
+        description: "The date when the customer's relationship with the company began."
+        tests:
+          - not_null
+
+      - name: ds_status
+        description: "Current status of the customer in the legacy system."
+
+      - name: extracted_at
+        description: "Timestamp of when the record was extracted from InterSystems Caché."
+        tests:
+          - not_null
+
+      - name: dbt_updated_at
+        description: "Audit column: Timestamp of when this model was last processed by dbt."

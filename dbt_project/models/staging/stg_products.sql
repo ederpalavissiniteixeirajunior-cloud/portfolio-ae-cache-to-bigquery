@@ -1,0 +1,96 @@
+with source as (
+    select * from {{ source('raw_cache', 'produtos') }}
+),
+
+renamed as (
+    select
+        
+        cast(ID as string) as nk_product,
+        cast(classificacaoFiscal as int64) as cd_fiscal__classification,
+        cast(codCor as int64) as cd_color,
+        cast(codEmpresa as int64) as cd_company,
+        cast(codEngenhariaConfec as string) as cd_confection_engineer,
+        cast(codEngenhariaPadrao as string) as cd_default_engineer,
+        cast(codEngenhariaTextil as string) as cd_textile_engineer,
+        cast(codProduto as int64) as cd_product,
+        cast(codProdutoPai as int64) as cd_parent_product,
+        cast(codTamanho as int64) as cd_size,
+        cast(codSortimento as string) as cd_sort,
+        cast(complementoCor as string) as ds_color_complement,
+        cast(dataHoraGeracao as datetime) as dt_creation,
+        cast(descProdutoEntrada as string) as ds_entry_product,
+        cast(descProdutoGen as string) as ds_product,
+        cast(descProdutoSaida as string) as ds_output_product,
+        cast(descricaoCor as string) as ds_color,
+        cast(finalidade as string) as ds_purpose,
+        cast(idEngenhariaConfec as string) as idEngenhariaConfec,
+        cast(idEngenhariaPadrao as string) as idEngenhariaPadrao,
+        cast(idEngenhariaTextil as string) as idEngenhariaTextil,
+        cast(idProduto as string) as id_product,
+        cast(mascEntradaNivel01 as string) as ds_entry_mask01,
+        cast(mascEntradaNivel02 as string) as ds_entry_mask02,
+        cast(mascEntradaNivel03 as string) as ds_entry_mask03,
+        cast(mascEntradaNivel04 as string) as ds_entry_mask04,
+        cast(mascEntradaNivel05 as string) as ds_entry_mask05,
+        cast(mascEntradaNivel06 as string) as ds_entry_mask06,
+        cast(mascEntradaNivel07 as string) as ds_entry_mask07,
+        cast(mascEntradaNivel08 as string) as ds_entry_mask08,
+        cast(mascEntradaNivel09 as string) as ds_entry_mask09,
+        cast(mascEntradaNivel10 as string) as ds_entry_mask10,
+        cast(mascEntradaNivel11 as string) as ds_entry_mask11,
+        cast(mascEntradaNivel12 as string) as ds_entry_mask12,
+        cast(mascEntradaNivel13 as string) as ds_entry_mask13,
+        cast(mascEntradaNivel14 as string) as ds_entry_mask14,
+        cast(mascEntradaNivel15 as string) as ds_entry_mask15,
+        cast(mascEntradaNivel16 as string) as ds_entry_mask16,
+        cast(mascEntradaNivel17 as string) as ds_entry_mask17,
+        cast(mascEntradaNivel18 as string) as ds_entry_mask18,
+        cast(mascEntradaNivel19 as string) as ds_entry_mask19,
+        cast(mascEntradaNivel20 as string) as ds_entry_mask20,
+        cast(mascSaidaNivel01 as string) as ds_output_mask01,
+        cast(mascSaidaNivel02 as string) as ds_output_mask02,
+        cast(mascSaidaNivel03 as string) as ds_output_mask03,
+        cast(mascSaidaNivel04 as string) as ds_output_mask04,
+        cast(mascSaidaNivel05 as string) as ds_output_mask05,
+        cast(mascSaidaNivel06 as string) as ds_output_mask06,
+        cast(mascSaidaNivel07 as string) as ds_output_mask07,
+        cast(mascSaidaNivel08 as string) as ds_output_mask08,
+        cast(mascSaidaNivel09 as string) as ds_output_mask09,
+        cast(mascSaidaNivel10 as string) as ds_output_mask10,
+        cast(mascSaidaNivel11 as string) as ds_output_mask11,
+        cast(mascSaidaNivel12 as string) as ds_output_mask12,
+        cast(mascSaidaNivel13 as string) as ds_output_mask13,
+        cast(mascSaidaNivel14 as string) as ds_output_mask14,
+        cast(mascSaidaNivel15 as string) as ds_output_mask15,
+        cast(mascSaidaNivel16 as string) as ds_output_mask16,
+        cast(mascSaidaNivel17 as string) as ds_output_mask17,
+        cast(mascSaidaNivel18 as string) as ds_output_mask18,
+        cast(mascSaidaNivel19 as string) as ds_output_mask19,
+        cast(mascSaidaNivel20 as string) as ds_output_mask20,
+        cast(mascaraEntrada as string) as ds_entry_mask,
+        cast(mascaraSaida as string) as ds_output_mask,
+        cast(ncm as string) as ncm,
+        cast(origem as string) as ds_origin,
+        cast(pesoBruto as string) as nr_gross_weight,
+        cast(pesoLiquido as string) as nr_net_weight,
+        cast(razaoEmpresa as string) as ds_corporate_name,
+        cast(statusEntrada as string) as ds_entry_status,
+        cast(statusSaida as string) as ds_output_status,
+        cast(tamanho as string) as ds_size,
+        cast(tipo as string) as ds_type,
+        cast(unidadeMedidaCompra as string) as unidadeMedidaCompra,
+        cast(unidadeMedidaEstoque as string) as unidadeMedidaEstoque,
+        cast(unidadeMedidaVenda as string) as unidadeMedidaVenda,
+
+        cast(extracted_at as timestamp) as extracted_at,
+        {{ generate_audit_columns() }}
+
+
+
+
+
+        
+    from source
+)
+
+select * from renamed
