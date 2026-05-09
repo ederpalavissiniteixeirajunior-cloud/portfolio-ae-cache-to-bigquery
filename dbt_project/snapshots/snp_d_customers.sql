@@ -1,4 +1,4 @@
-{% snapshot snp_d_customers %}
+{% snapshot snp_d_customer %}
 
 {{
     config(
@@ -21,6 +21,6 @@
 }}
 
 
-select * from {{ ref('itm_d_customers') }}
+select * from {{ ref('itm_d_customer') }}
 
 {% endsnapshot %}

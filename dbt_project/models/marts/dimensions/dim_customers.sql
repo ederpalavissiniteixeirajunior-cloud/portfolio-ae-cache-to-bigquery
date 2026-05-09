@@ -1,5 +1,5 @@
 with source as (
-    select * from {{ ref('snp_d_customers') }}
+    select * from {{ ref('snp_d_customer') }}
 ),
 
 final as (

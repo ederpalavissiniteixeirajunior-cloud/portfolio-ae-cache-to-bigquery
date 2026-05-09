@@ -1,6 +1,5 @@
--- Standardizing and cleaning customer data before history tracking
 with staging as (
-    select * from {{ ref('stg_customers') }}
+    select * from {{ ref('stg_customer') }}
 ),
 
 intermediate as (
