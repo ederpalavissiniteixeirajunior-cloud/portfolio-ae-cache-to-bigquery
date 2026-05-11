@@ -10,6 +10,7 @@
         'nk_sales_representatives',
         'ds_email', 
         'ds_representative_name',
+        'nm_group_sales_representative',
         'ds_city', 
         'ds_state',
         'cd_status'

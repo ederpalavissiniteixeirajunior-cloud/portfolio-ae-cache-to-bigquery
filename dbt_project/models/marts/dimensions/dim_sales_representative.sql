@@ -9,6 +9,7 @@ final as (
         cd_sales_representative,
         nk_sales_representatives,
         id_sales_representative_uuid,
+        nm_group_sales_representative,
         ds_representative_name,
         cd_tax_id,
         ds_email,
