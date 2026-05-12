@@ -1,4 +1,4 @@
 SELECT 
     *
 FROM
-    `silver.itm_f_orders`
+    `bigquery_gold.silver.itm_f_orders`
