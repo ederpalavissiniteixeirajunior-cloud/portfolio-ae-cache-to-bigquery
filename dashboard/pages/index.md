@@ -1,14 +1,14 @@
 # Sales data
 
 ```sql pedidos
-select * from bigquery_silver.itm_f_orders
+select * from bigquery_gold.pedidos
 ```
 
 ```sql pedidos_por_data
 select 
   month(dt_issued) as "mês",
   count(distinct cd_order) as "pedidos"
-  from bigquery_silver.itm_f_orders
+  from bigquery_gold.pedidos
   group by "mês"
 ```
 
