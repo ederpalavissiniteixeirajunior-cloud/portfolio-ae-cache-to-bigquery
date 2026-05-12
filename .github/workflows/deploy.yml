@@ -28,7 +28,10 @@ jobs:
         working-directory: ./dashboard
 
       - name: Create GCP Key File
-        run: echo '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}' > ./dashboard/gcp-key.json
+        run: |
+          cat <<EOF > ./dashboard/gcp-key.json
+          ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          EOF
 
       - name: Run Evidence Sources
         run: npm run sources
