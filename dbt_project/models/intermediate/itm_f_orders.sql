@@ -16,19 +16,14 @@ intermediate as (
         s.dt_issued,
         s.nm_status,
         c.id_collection,
-        row_number() over (
-            partition by s.cd_order
-            order by c.start_date desc
-        ) as rn,
         current_timestamp() as updated_at
     from staging s
     left join collections c
     on s.dt_issued >= c.start_date
     and (s.dt_issued <= c.end_date OR c.end_date IS NULL)
     where s.cd_company = 1
-    and s.nm_operator = 'Integração GEOvendas'
+    and s.nm_operator LIKE 'Integração GEOvendas%'
 )
 
-select * except(rn) 
-from intermediate
-where rn = 1
+select * from intermediate
+where id_collection IS NOT NULL

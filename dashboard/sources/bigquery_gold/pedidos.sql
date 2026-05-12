@@ -1,1 +1,4 @@
-select * from `portfolio-ae-vendas.gold.fct_sales`
+SELECT 
+    *
+FROM
+    `silver.itm_f_orders`
