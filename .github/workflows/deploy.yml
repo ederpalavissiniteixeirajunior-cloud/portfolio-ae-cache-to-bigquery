@@ -1,0 +1,57 @@
+name: Deploy Evidence to Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: './dashboard/package-lock.json'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./dashboard
+
+      - name: Create GCP Key File
+        run: echo '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}' > ./dashboard/gcp-key.json
+
+      - name: Run Evidence Sources
+        run: npm run sources
+        working-directory: ./dashboard
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./gcp-key.json
+
+      - name: Build Static Site
+        run: npm run build
+        working-directory: ./dashboard
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dashboard/build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
