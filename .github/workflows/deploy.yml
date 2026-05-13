@@ -42,6 +42,11 @@ jobs:
       - name: Build Static Site
         run: npm run build
         working-directory: ./dashboard
+        env:
+          EVIDENCE_BASE_PATH: /portfolio-ae-cache-to-bigquery
+      
+      - name: Disable Jekyll and Fix Paths
+        run: touch ./dashboard/build/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
