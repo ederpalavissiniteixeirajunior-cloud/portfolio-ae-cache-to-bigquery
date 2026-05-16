@@ -26,6 +26,9 @@ models:
     marts:
       +schema: gold
       +materialized: table
+    analytics:
+      +schema: analytics
+      +materialized: view
 seeds:
   portfolio_ae: 
     +delimiter: ";" 

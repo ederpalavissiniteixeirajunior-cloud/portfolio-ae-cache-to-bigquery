@@ -29,7 +29,11 @@ def conectar_cache():
     """Create a new fresh connection with InterSystems Caché."""
     dsn = os.getenv('CACHE_DSN')
     return pyodbc.connect(f'DSN={dsn}', autocommit=True)
-
+    conn.setdecoding(pyodbc.SQL_CHAR, encoding='utf-8')
+    conn.setdecoding(pyodbc.SQL_WCHAR, encoding='utf-8')
+    conn.setencoding(encoding='utf-8')
+    
+    return conn
 def anonimizar_lote(df):
     """Anonymizes sensitive columns (PII) for LGPD compliance."""
     colunas_sensíveis = ['nome', 'cliente_nome', 'contato', 'documento']
