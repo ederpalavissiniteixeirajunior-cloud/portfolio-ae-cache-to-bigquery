@@ -78,3 +78,5 @@ plugins:
 
 deployment:
   basePath: /portfolio-ae-cache-to-bigquery
+
+homePageName: Project Overview

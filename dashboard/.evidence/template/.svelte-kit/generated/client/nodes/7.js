@@ -1,3 +1,1 @@
-import * as universal from "../../../../src/pages/settings/+page.js";
-export { universal };
-export { default as component } from "../../../../src/pages/settings/+page.svelte";
+export { default as component } from "../../../../src/pages/GitHub Process/+page.md";

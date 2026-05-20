@@ -4,7 +4,7 @@ with staging as (
 
 intermediate as (
     select distinct
-        {{ dbt_utils.generate_surrogate_key(['cd_customer  ']) }} as sk_customer  ,
+        {{ dbt_utils.generate_surrogate_key(['cd_customer  ']) }} as sk_customer ,
         cd_customer,
         nk_customer,
         cd_representative,

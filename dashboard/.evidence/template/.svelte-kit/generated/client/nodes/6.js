@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/pages/explore/schema/+page.svelte";
+export { default as component } from "../../../../src/pages/Data Pipeline & Architecture/+page.md";

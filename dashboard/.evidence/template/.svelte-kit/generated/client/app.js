@@ -11,16 +11,26 @@ export const nodes = [
 	() => import('./nodes/4'),
 	() => import('./nodes/5'),
 	() => import('./nodes/6'),
-	() => import('./nodes/7')
+	() => import('./nodes/7'),
+	() => import('./nodes/8'),
+	() => import('./nodes/9'),
+	() => import('./nodes/10'),
+	() => import('./nodes/11'),
+	() => import('./nodes/12')
 ];
 
 export const server_loads = [3];
 
 export const dictionary = {
 		"/": [4],
-		"/explore/console": [5,[2]],
-		"/explore/schema": [6,[2]],
-		"/settings": [~7,[3]]
+		"/About me": [5],
+		"/Data Pipeline & Architecture": [6],
+		"/GitHub Process": [7],
+		"/Governance & Security": [8],
+		"/executive_report": [9],
+		"/explore/console": [10,[2]],
+		"/explore/schema": [11,[2]],
+		"/settings": [~12,[3]]
 	};
 
 export const hooks = {

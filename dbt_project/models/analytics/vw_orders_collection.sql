@@ -9,12 +9,14 @@ collections as (
 
 intermediate as (
     select
+        c.id_collection,
         c.collection_name,
         ROUND(SUM(o.vl_original_total),2) AS vl_original_total,
     from collections c
     left join orders o
     ON c.sk_collection_version = o.sk_collection_version
-    group by 1
+    group by 1,2
+    order by c.id_collection asc
 
 )
 

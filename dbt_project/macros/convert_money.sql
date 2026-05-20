@@ -9,7 +9,7 @@
     ROUND(
         SAFE_CAST(
             {% if input_is_cents %}
-                (safe_cast({{ column_name }} as float64) / 100.0)
+                (safe_cast({{ column_name }} as float64))
             {% else %}
                 {{ column_name }}
             {% endif %} 

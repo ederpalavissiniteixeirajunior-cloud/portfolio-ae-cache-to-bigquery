@@ -56,6 +56,8 @@ intermediate as (
         current_timestamp() as updated_at
     from staging
     where cd_company = 1
+    
 )
 
 select * from intermediate
+where nm_group_sales_representative <> "-"

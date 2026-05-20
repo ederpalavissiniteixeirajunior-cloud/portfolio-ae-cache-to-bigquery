@@ -1,26 +1,31 @@
-# Sales data
+---
+title: Project Overview
+sidebar_label: Project Overview
+---
 
-```sql pedidos
-select * from bigquery_gold.pedidos
-```
+# Modernizing Legacy Data: Zero-Cost End-to-End Analytics
 
-```sql pedidos_por_data
-select 
-  month(dt_issued) as "mês",
-  count(distinct cd_order) as "pedidos"
-  from bigquery_gold.pedidos
-  group by "mês"
-```
+Welcome. This project demonstrates a production-grade **Modern Data Stack** built to bridge the gap between a 20-year-old legacy system (**InterSystems Caché**) and modern executive decision-making.
 
-<LineChart
-  data={pedidos_por_data}
-  x=mês
-  y=pedidos
-/>
+## 🎯 The Business Challenge
+In many industries, legacy systems store goldmines of data but lack the flexibility for modern analytics. The main issues addressed here were:
+- **Data Drift:** Historical reports changed when master data (like prices) were updated.
+- **Security:** Sensitive customer data needed to be anonymized before hitting the cloud.
+- **Cost:** Implementing a high-end solution with **$0 infrastructure overhead**.
 
+## 🛠️ The Architecture
+> This pipeline is fully automated and follows the **Medallion Architecture**.
 
-<BigValue
-  data={pedidos}
-  value=vl_original_total
-/>
+- **Ingestion:** Python scripts running on a VPS (Ubuntu) with PII masking.
+- **Warehouse:** Google BigQuery (Sandbox environment).
+- **Transformation:** dbt Core (v1.10+) implementing **SCD Type 2**.
+- **Delivery:** Evidence.dev hosted on GitHub Pages.
 
+---
+
+### 🚀 Quick Links
+- [**Business Intelligence**](/executive_report): Check the final sales performance and margin analysis.
+- [**Data Governance**](/governance): See how I handled PII and Historical Snapshots.
+- [**Technical Deep-Dive**](/pipeline): Explore the dbt models and CI/CD workflows.
+
+---

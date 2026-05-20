@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/pages/Governance & Security/+page.md";
