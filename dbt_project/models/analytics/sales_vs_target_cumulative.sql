@@ -45,6 +45,7 @@ daily_sales as (
         f.sk_collection_version,
         sum(f.vl_original_total) as daily_revenue
     from {{ ref('fct_orders') }} f
+    where f.nm_status <> 'CANCELADO'
     group by 1, 2
 ),
 

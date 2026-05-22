@@ -31,9 +31,18 @@ from
 where 
     collection_name = '${inputs.collection_selector}'
 ```
+
+```sql total
+select
+    MAX(cumulative_sales) as total
+from
+    analytics.sales_vs_target_cumulative
+where 
+    collection_name = '${inputs.collection_selector}'
+```
 <BigValue 
-  data={cumulative} 
-  value=Total
+  data={total} 
+  value=total
   --comparison=1
   title='Total Amount'
   fmt=brl
@@ -45,7 +54,7 @@ where
     data={cumulative}
     x=reference_date 
     y={['cumulative_sales', 'cumulative_target']}
-    title="Cumulative Sales vs. cumulative target"
+    title="Cumulative - Sales vs. Target"
     fmt=brl2m
     yfmt=brl
     tooltipFmt={['brl', 'brl']}

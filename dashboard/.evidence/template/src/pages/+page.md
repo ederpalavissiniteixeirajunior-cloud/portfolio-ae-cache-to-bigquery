@@ -21,11 +21,3 @@ In many industries, legacy systems store goldmines of data but lack the flexibil
 - **Transformation:** dbt Core (v1.10+) implementing **SCD Type 2**.
 - **Delivery:** Evidence.dev hosted on GitHub Pages.
 
----
-
-### 🚀 Quick Links
-- [**Business Intelligence**](/executive_report): Check the final sales performance and margin analysis.
-- [**Data Governance**](/governance): See how I handled PII and Historical Snapshots.
-- [**Technical Deep-Dive**](/pipeline): Explore the dbt models and CI/CD workflows.
-
----
