@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/pages/GitHub Process/+page.md";
+export { default as component } from "../../../../src/pages/Executive Sales Intelligence/+page.md";

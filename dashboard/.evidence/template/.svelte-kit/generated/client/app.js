@@ -25,9 +25,9 @@ export const dictionary = {
 		"/": [4],
 		"/About me": [5],
 		"/Data Pipeline & Architecture": [6],
-		"/GitHub Process": [7],
-		"/Governance & Security": [8],
-		"/executive_report": [9],
+		"/Executive Sales Intelligence": [7],
+		"/GitHub Process": [8],
+		"/Governance & Security": [9],
 		"/explore/console": [10,[2]],
 		"/explore/schema": [11,[2]],
 		"/settings": [~12,[3]]

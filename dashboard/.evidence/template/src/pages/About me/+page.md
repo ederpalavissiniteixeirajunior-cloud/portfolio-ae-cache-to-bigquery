@@ -12,13 +12,13 @@ Currently, I serve as a **BI Manager & Analytics Lead**, where I bridge the gap 
 
 ---
 
-## 📈 Impact & Highlights
+## Impact & Highlights
 In my recent roles, I have focused on high-impact initiatives:
 * **Revenue Growth:** Led BI strategies that contributed to a 60% revenue increase through predictive sales models and improved inventory visibility.
 * **Operational Efficiency:** Achieved a 75% reduction in reporting time by automating ETL processes and migrating legacy manual tasks to Modern Data Stack architectures.
 * **Process Optimization:** Refactored legacy pipelines using **Apache Spark (Databricks)** and identified operational bottlenecks that led to a 63% reduction in unresolved CX cases.
 
-## 🛠️ Technical Landscape
+## Technical Landscape
 My expertise spans the entire data lifecycle, from ingestion to storytelling:
 
 * **Data Engineering:** Databricks (Spark), ETL/ELT pipelines, and diverse database management (SQL Server, PostgreSQL, MongoDB, BigQuery).
@@ -28,7 +28,7 @@ My expertise spans the entire data lifecycle, from ingestion to storytelling:
 
 ---
 
-## 📂 About This Portfolio
+## About This Portfolio
 While my daily work often involves large-scale enterprise tools like Databricks and Power BI, I built this specific environment to demonstrate **Modern Data Stack** proficiency with a "Zero-Cost" constraint.
 
 This project serves as a technical sandbox for:
@@ -38,7 +38,7 @@ This project serves as a technical sandbox for:
 
 ---
 
-## 🤝 Let's Connect
+## Let's Connect
 I am always looking for challenging remote opportunities where I can apply my engineering and leadership skills to drive business value.
 
 <LinkButton url='https://www.linkedin.com/in/eder-palavissini/?locale=en-US'>
@@ -52,3 +52,5 @@ I am always looking for challenging remote opportunities where I can apply my en
 <LinkButton url='mailto:ederpalavissiniteixeirajunior@gmail.com'>
   📧 Email
 </LinkButton>
+
+<LastRefreshed/>
