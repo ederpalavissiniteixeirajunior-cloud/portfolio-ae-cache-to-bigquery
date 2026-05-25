@@ -33,6 +33,9 @@ The platform's architecture is divided into a three-stage operational workflow, 
 
 </Grid>
 
+> ### 💡 Senior Architecture Note: Purposeful Full-Refresh Ingestion
+> While incremental pipelines are standard for massive tables, a strategic "Full-Refresh" pattern was chosen for the Ingestion layer. Given the legacy source (InterSystems Caché) limitations regarding reliable update/delete flags, and since the cumulative database size stays under 1 Million rows, a daily full snapshot ensures 100% data consistency. This design eliminates synchronization drift with near-zero compute overhead, strictly respecting BigQuery's free tier slot allocation.
+
 ---
 
 ## 🛡️ Edge Governance: PII Masking & Compliance
@@ -125,4 +128,4 @@ To maintain a **Zero-Cost Infrastructure** blueprint, the orchestration workflow
 1. **The Edge Job (VPS Cron):** Extracted mutations are packed, masked in-memory using `Faker`, and safely landed into the BigQuery Storage engine.
 2. **The Cloud Lifecycle Workflow:** Once telemetry lands, an event-driven automation framework controls the compilation of dbt Core models and builds the static dashboard artifacts.
 
-Detailed build configurations, environment variables isolation, and step-by-step pipeline logging can be explored natively in our **[Github Process (CI/CD)](./github-process)** documentation tab.
+Detailed build configurations, environment variables isolation, and step-by-step pipeline logging can be explored natively in our **Github Process (CI/CD)** documentation tab.

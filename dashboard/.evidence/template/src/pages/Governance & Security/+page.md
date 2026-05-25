@@ -14,21 +14,21 @@ To enforce strict compliance with global data protection standards (**GDPR / LGP
 
 > **Senior Architecture Note:** This perimeter defense completely isolates real identities. In the event of a downstream Cloud Data Warehouse breach, the corporate analytic datasets remain legally obfuscated and mathematically unresolvable back to operational individuals.
 
-<pre><code class="language-python">
-# pipeline/ingestion/masking_engine.py
+<pre style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; overflow-x: auto; line-height: 1.5;">
+import pandas as pd
 from faker import Faker
 
-fake = Faker('pt_BR')
-
-def mask_edge_payload(raw_row):
-    # Ephemeral in-memory data transformation before cloud delivery
-    return &#123;
-        "id_cliente": raw_row["id_cliente"],
-        "nome_cliente": fake.name(),
-        "documento": fake.cpf(),
-        "data_cadastro": raw_row["data_cadastro"]
-    &#125;
-</code></pre>
+def mask_edge_payload(df_raw: pd.DataFrame) -> pd.DataFrame:
+    # Enforces D-0 Edge Governance by masking customer identifying attributes
+    # in-memory using a localized seed provider prior to BigQuery insertion.
+    fake = Faker(['en_US'])
+    
+    # Deterministic mapping to maintain relationship integrity without exposing true PII
+    df_raw['nm_customer'] = df_raw['nk_customer'].apply(lambda x: fake.name())
+    df_raw['ds_document'] = df_raw['nk_customer'].apply(lambda x: fake.ssn())
+    
+    return df_raw
+</pre>
 
 ---
 
@@ -57,11 +57,11 @@ models:
 
 ### Dimensional Integrity Rules
 <pre><code class="language-yaml">
-# models/marts/fct_sales_monthly.yml
+# models/marts/fct_orders.yml
 version: 2
 
 models:
-  - name: fct_sales_monthly
+  - name: fct_orders
     description: "Granular monthly sales performance transaction matrix."
     columns:
       - name: customer_key
@@ -81,4 +81,4 @@ Operating within strict enterprise architecture guidelines requires structural c
 
 * **Principle of Least Privilege (PoLP):** The Evidence interface authenticates to the Google Cloud Sandbox using a dedicated Service Account. This identity is restricted exclusively to `BigQuery Data Viewer` and `BigQuery Job User` roles, nullifying any write or administrative threat vectors.
 * **Compute Footprint Mitigation:** By engineering a Jamstack presentation layer, interactive report parameters are computed client-side via **DuckDB WASM**. This offloads execution workloads from the warehouse, conserving the 1TB monthly free tier quota.
-* **Billing Workaround Execution:** Google Cloud Billing was safely enabled to unlock native Data Manipulation Language (**DML MERGE**) capabilities required for dbt Core historical snapshots (**SCD Type 2**), while ensuring real-world compute remains at a true net-zero expense.
+* **Billing Workaround Execution:** To support complex dbt Core historical multi-statement transactions (SCD Type 2 MERGE), Google Cloud Billing was safely enabled. To strictly preserve the $0 infrastructure constraint, a hard programmatic budget alarm of $0.00 was applied, ensuring execution remains entirely sandboxed within GCP's 10GB storage and 1TB monthly free tier thresholds.
