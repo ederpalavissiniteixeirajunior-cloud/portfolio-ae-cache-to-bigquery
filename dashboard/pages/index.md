@@ -20,5 +20,3 @@ In many industries, legacy systems store goldmines of data but lack the flexibil
 - **Warehouse:** Google BigQuery (Sandbox environment).
 - **Transformation:** dbt Core (v1.10+) implementing **SCD Type 2**.
 - **Delivery:** Evidence.dev hosted on GitHub Pages.
-
-<LastRefreshed/>

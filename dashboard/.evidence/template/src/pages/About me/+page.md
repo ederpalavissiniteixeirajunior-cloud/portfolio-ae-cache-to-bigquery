@@ -41,16 +41,20 @@ This project serves as a technical sandbox for:
 ## Let's Connect
 I am always looking for challenging remote opportunities where I can apply my engineering and leadership skills to drive business value.
 
-<LinkButton url='https://www.linkedin.com/in/eder-palavissini/?locale=en-US'>
-  🔗 LinkedIn
-</LinkButton>
+<Link 
+    url="https://www.linkedin.com/in/eder-palavissini/?locale=en-US"
+    label="🔗 LinkedIn"
+    newTab=true
+/>
 |
-<LinkButton url='https://github.com/ederpalavissiniteixeirajunior-cloud'>
-  📂 GitHub
-</LinkButton>
+<Link 
+    url="https://github.com/ederpalavissiniteixeirajunior-cloud"
+    label="📂 GitHub"
+    newTab=true
+/>
 |
-<LinkButton url='mailto:ederpalavissiniteixeirajunior@gmail.com'>
-  📧 Email
-</LinkButton>
-
-<LastRefreshed/>
+<Link 
+    url="mailto:ederpalavissiniteixeirajunior@gmail.com"
+    label="📧 Email"
+    newTab=true
+/>
