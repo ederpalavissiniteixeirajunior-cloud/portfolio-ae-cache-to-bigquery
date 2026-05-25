@@ -81,7 +81,7 @@ WITH product_snapshot AS (
 
 SELECT
     -- Late-binding Surrogate Key generation
-    &#123;&#123; dbt_utils.generate_surrogate_key(['nk_product', 'dbt_valid_from']) &#125;&#125; AS sk_product,
+    &#123;&#123; dbt_utils.generate_surrogate_key(['nk_product', 'dbt_valid_from']) &#125;&#125; AS sk_product_version,
     nk_product,
     ds_product,
     vl_price,
@@ -97,7 +97,7 @@ The sales fact table (`fct_orders`) matches the exact state of dimensions at the
 <pre style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; overflow-x: auto; line-height: 1.5;">
 -- Snippet from fct_orders.sql demonstrating Temporal Joins
 SELECT
-    f.id_order,
+    f.sk_order_version,
     f.dt_sale,
     -- Joining dimensions based on point-in-time state
     d_prod.sk_product,
@@ -114,7 +114,7 @@ AND f.dt_sale BETWEEN d_prod.dt_start AND d_prod.dt_end
 
 A data platform is only as valuable as the certainty of its metrics. To protect our downstream exposition layer hosted within the browser, the Medallion architecture enforces embedded quality contracts:
 
-* **Uniqueness & Non-Null Assertions:** Staging and Gold models execute strict checks on identity keys (`sk_product`, `id_order`) to ensure structural consistency.
+* **Uniqueness & Non-Null Assertions:** Staging and Gold models execute strict checks on identity keys (`sk_product`, `sk_order_version`) to ensure structural consistency.
 * **Custom Referential Integrity:** Cross-layer tests prevent mismatched orders from breaking dimensional lookups.
 * **SCD2 Boundary Overlap Tests:** Custom integrity validation prevents date boundary overlapping (`dt_start` smaller than `dt_end`), mitigating the risk of cartesian inflation.
 

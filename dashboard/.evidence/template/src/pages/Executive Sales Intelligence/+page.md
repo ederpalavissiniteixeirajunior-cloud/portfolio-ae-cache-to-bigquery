@@ -11,11 +11,12 @@ sidebar_position: 1
 
 
 ```sql options
-select distinct
-        collection_name
+select
+    collection_name
 from
     analytics.sales_vs_target_cumulative
-ORDER BY id_collection
+group by collection_name
+order by min(id_collection)
 ```
 
 

@@ -62,15 +62,18 @@ version: 2
 
 models:
   - name: fct_orders
-    description: "Granular monthly sales performance transaction matrix."
+    description: "Granular sales performance transaction matrix mapped from legacy operational blocks."
     columns:
-      - name: customer_key
+      - name: sk_order_version
         tests:
           - unique
           - not_null
+      - name: sk_customer_version
+        tests:
+          - not_null
           - relationships:
               to: ref('dim_customers')
-              field: customer_key
+              field: sk_customer_version
 </code></pre>
 
 ---
