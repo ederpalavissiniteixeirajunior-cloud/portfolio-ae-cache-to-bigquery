@@ -1,3 +1,13 @@
+{{ config(
+    materialized='table',
+    partition_by={
+      "field": "dt_issued",
+      "data_type": "date",
+      "granularity": "day"
+    },
+    cluster_by=["sk_customer_version", "sk_product_version", "sk_sales_representative_version"]
+) }}
+
 with item_sales as (
     select * from {{ ref('itm_f_order_items') }}
 ),
@@ -28,7 +38,7 @@ dim_calendar as (
 
 final_join as (
     select
-        --Surrogate Key
+        -- Surrogate Key
         i.sk_order_item,
         
         -- Dimension Surrogate Keys
@@ -44,9 +54,9 @@ final_join as (
         h.cd_customer,
         h.cd_sales_representative,
         i.cd_company,
-        h.nm_status as ds_order_status,
+        h.nm_status,
         
-        -- Context Dates
+        -- Dates
         h.dt_issued,
         
         -- Item Quantities
@@ -55,7 +65,7 @@ final_join as (
         i.qt_blocked,
         i.qt_canceled,
         
-        -- Item Unit Prices and Percentages
+        -- Item Unit Prices
         i.vl_unit_price,
         i.vl_net_unit_price,
         i.vl_unit_price_me,
@@ -74,21 +84,20 @@ final_join as (
     inner join order_header h 
         on i.cd_order = h.cd_order
         
-    
     left join dim_customers c 
         on h.cd_customer = c.cd_customer 
-        and c.is_current = true
+        and h.dt_issued between c.dbt_valid_from and coalesce(c.dbt_valid_to, '9999-12-31')
         
     left join dim_representatives r 
         on h.cd_sales_representative = r.cd_sales_representative
-        and r.is_current = true
+        and h.dt_issued between r.dbt_valid_from and coalesce(r.dbt_valid_to, '9999-12-31')
         
     left join dim_collections col 
         on h.id_collection = col.id_collection
         
     left join dim_products p 
         on i.cd_product = p.cd_product
-        and p.is_current = true
+        and h.dt_issued between p.dbt_valid_from and coalesce(p.dbt_valid_to, '9999-12-31')
         
     left join dim_calendar cal 
         on h.dt_issued = cal.dt_date

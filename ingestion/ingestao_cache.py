@@ -118,13 +118,12 @@ def processar_extracao(job, bq_client, cache_conn):
 # ==================== DEFINITION OF THE DATA MESH ====================
 
 JOBS_CONFIG = [
-    {'tabela_origem': 'dw_fat.Cliente', 'tabela_destino': 'clientes'},
-    {'tabela_origem': 'dw_cad.Produto', 'tabela_destino': 'produtos'},
-    {'tabela_origem': 'dw_fat.Representante', 'tabela_destino': 'representantes'},
-    {'tabela_origem': 'dw_ped.Pedido', 'tabela_destino': 'pedidos'},
+    {'tabela_origem': 'dw_fat.Cliente', 'tabela_destino': 'customer'},
+    {'tabela_origem': 'dw_cad.Produto', 'tabela_destino': 'products'},
+    {'tabela_origem': 'dw_fat.Representante', 'tabela_destino': 'sales_representative'},
+    {'tabela_origem': 'dw_ped.Pedido', 'tabela_destino': 'orders'},
     # Critical/large tables with smaller chunk size to avoid timeout
-    {'tabela_origem': 'dw_cre.ContasReceber', 'tabela_destino': 'contas_receber', 'chunk_size': 10000},
-    {'tabela_origem': 'dw_est.EstoqueProduto', 'tabela_destino': 'estoque_produto', 'chunk_size': 10000}
+    {'tabela_origem': 'dw_ped.PedidoItem', 'tabela_destino': 'order_items', 'chunk_size': 10000}
 ]
 
 if __name__ == "__main__":

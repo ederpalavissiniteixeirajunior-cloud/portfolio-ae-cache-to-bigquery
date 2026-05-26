@@ -3,9 +3,13 @@
 {{
     config(
       target_schema='silver',
-      unique_key='sk_product',
+      unique_key='cd_product',
       strategy='check',
-      check_cols=[  'ds_product', 'ds_product_reference','ds_color'],
+      check_cols=[  
+        'ds_product', 
+        'ds_product_reference',
+        'ds_color'
+      ],
       invalidate_hard_deletes=True
     )
 }}

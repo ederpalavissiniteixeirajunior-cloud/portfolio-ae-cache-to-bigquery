@@ -3,7 +3,7 @@
 {{
     config(
       target_schema='silver',
-      unique_key='sk_sales_representative',
+      unique_key='cd_sales_representative',
       strategy='check',
       check_cols=[ 
         'cd_sales_representative',

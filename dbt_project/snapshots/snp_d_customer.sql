@@ -3,7 +3,7 @@
 {{
     config(
       target_schema='silver',
-      unique_key='sk_customer',
+      unique_key='cd_customer',
       strategy='check',
       check_cols=[ 
         'cd_representative',

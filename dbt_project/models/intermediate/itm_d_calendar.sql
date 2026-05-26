@@ -19,53 +19,53 @@ WITH calendario AS (
     EXTRACT(QUARTER FROM date_day)                                           AS nu_quarter,
     CASE WHEN EXTRACT(MONTH FROM date_day) <= 6 THEN 1 ELSE 2 END            AS nu_semester,
     CASE EXTRACT(MONTH FROM date_day)
-      WHEN 1 THEN 'Janeiro'
-      WHEN 2 THEN 'Fevereiro'
-      WHEN 3 THEN 'Março'
-      WHEN 4 THEN 'Abril'
-      WHEN 5 THEN 'Maio'
-      WHEN 6 THEN 'Junho'
-      WHEN 7 THEN 'Julho'
-      WHEN 8 THEN 'Agosto'
-      WHEN 9 THEN 'Setembro'
-      WHEN 10 THEN 'Outubro'
-      WHEN 11 THEN 'Novembro'
-      WHEN 12 THEN 'Dezembro'
+      WHEN 1 THEN 'January'
+      WHEN 2 THEN 'February'
+      WHEN 3 THEN 'March'
+      WHEN 4 THEN 'April'
+      WHEN 5 THEN 'May'
+      WHEN 6 THEN 'June'
+      WHEN 7 THEN 'July'
+      WHEN 8 THEN 'August'
+      WHEN 9 THEN 'September'
+      WHEN 10 THEN 'October'
+      WHEN 11 THEN 'November'
+      WHEN 12 THEN 'December'
     END                                                                      AS ds_month,
     CASE EXTRACT(MONTH FROM date_day)
       WHEN 1 THEN 'Jan'
-      WHEN 2 THEN 'Fev'
+      WHEN 2 THEN 'Feb'
       WHEN 3 THEN 'Mar'
-      WHEN 4 THEN 'Abr'
-      WHEN 5 THEN 'Mai'
+      WHEN 4 THEN 'Apr'
+      WHEN 5 THEN 'May'
       WHEN 6 THEN 'Jun'
       WHEN 7 THEN 'Jul'
-      WHEN 8 THEN 'Ago'
-      WHEN 9 THEN 'Set'
-      WHEN 10 THEN 'Out'
+      WHEN 8 THEN 'Aug'
+      WHEN 9 THEN 'Sep'
+      WHEN 10 THEN 'Oct'
       WHEN 11 THEN 'Nov'
-      WHEN 12 THEN 'Dez'
+      WHEN 12 THEN 'Dec'
     END                                                                      AS ds_month_abbreviated,
     CASE EXTRACT(DAYOFWEEK FROM date_day)
-      WHEN 1 THEN 'Domingo'
-      WHEN 2 THEN 'Segunda-feira'
-      WHEN 3 THEN 'Terça-feira'
-      WHEN 4 THEN 'Quarta-feira'
-      WHEN 5 THEN 'Quinta-feira'
-      WHEN 6 THEN 'Sexta-feira'
-      WHEN 7 THEN 'Sábado'
+      WHEN 1 THEN 'Sunday'
+      WHEN 2 THEN 'Monday'
+      WHEN 3 THEN 'Tuesday'
+      WHEN 4 THEN 'Wednesday'
+      WHEN 5 THEN 'Thursday'
+      WHEN 6 THEN 'Friday'
+      WHEN 7 THEN 'Saturday'
     END                                                                      AS ds_day_week,
     CASE EXTRACT(DAYOFWEEK FROM date_day)
-      WHEN 1 THEN 'Dom'
-      WHEN 2 THEN 'Seg'
-      WHEN 3 THEN 'Ter'
-      WHEN 4 THEN 'Qua'
-      WHEN 5 THEN 'Qui'
-      WHEN 6 THEN 'Sex'
-      WHEN 7 THEN 'Sáb'
+      WHEN 1 THEN 'Sun'
+      WHEN 2 THEN 'Mon'
+      WHEN 3 THEN 'Tue'
+      WHEN 4 THEN 'Wed'
+      WHEN 5 THEN 'Thu'
+      WHEN 6 THEN 'Fri'
+      WHEN 7 THEN 'Sat'
     END                                                                      AS ds_day_week_abbreviated,
-    CONCAT(CAST(EXTRACT(QUARTER FROM date_day) AS STRING), 'º Trimestre')    AS ds_quarter,
-    CASE WHEN EXTRACT(MONTH FROM date_day) <= 6 THEN '1º Semestre' ELSE '2º Semestre' END AS ds_semester,    
+    CONCAT(CAST(EXTRACT(QUARTER FROM date_day) AS STRING), 'º Quarter')    AS ds_quarter,
+    CASE WHEN EXTRACT(MONTH FROM date_day) <= 6 THEN '1º Quarter' ELSE '2º Quarter' END AS ds_semester,    
     CASE WHEN EXTRACT(DAYOFWEEK FROM date_day) IN (1, 7) THEN TRUE ELSE FALSE END AS in_weekend,
     CASE WHEN EXTRACT(DAYOFWEEK FROM date_day) NOT IN (1, 7) THEN TRUE ELSE FALSE END AS in_business_day,
     CURRENT_TIMESTAMP()                                                      AS updated_at

@@ -1,3 +1,13 @@
+{{ config(
+    materialized='table',
+    partition_by={
+      "field": "dt_issued",
+      "data_type": "date",
+      "granularity": "day"
+    },
+    cluster_by=["sk_customer_version", "sk_sales_representative_version"]
+) }}
+
 with orders as (
     select * from {{ ref('itm_f_orders') }}
 ),
@@ -32,16 +42,15 @@ final_join as (
         current_timestamp() as updated_at
 
     from orders f
+    
     left join dim_customers c 
         on f.cd_customer = c.cd_customer 
-        and c.is_current = true
+        and f.dt_issued between c.dbt_valid_from and coalesce(c.dbt_valid_to, '9999-12-31')
     
-
     left join dim_representatives r 
         on f.cd_sales_representative = r.cd_sales_representative
-        and r.is_current = true
+        and f.dt_issued between r.dbt_valid_from and coalesce(r.dbt_valid_to, '9999-12-31')
     
-
     left join dim_collections col 
         on f.id_collection = col.id_collection
 
