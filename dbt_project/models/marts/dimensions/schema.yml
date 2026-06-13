@@ -1,0 +1,376 @@
+version: 2
+
+models:
+  - name: dim_calendar
+    description: "Central enterprise calendar dimension table. Provides an exhaustive set of date attributes, quarters, semesters, and analytical flags to support operational and financial time-series analysis without dynamic execution overhead."
+    columns:
+      # --- Primary Key / Surrogate Keys ---
+      - name: sk_time_version
+        description: "Primary key of this dimension record snapshot. Unique surrogate key generated via hashing the technical time key and its ingestion processing metadata."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: sk_time
+        description: "The core dimensional surrogate key representing a unique enterprise date entity across technical warehouse iterations."
+        data_tests:
+          - not_null
+
+      - name: dt_date
+        description: "The calendar date value. Used as the main logical key for dynamic point-in-time partitioning and transactional fact table mappings."
+        data_tests:
+          - unique
+          - not_null
+
+      # --- Numerical Time Parts ---
+      - name: nu_year
+        description: "Four-digit numerical representation of the calendar year (e.g., 2026)."
+        data_tests:
+          - not_null
+
+      - name: nu_month
+        description: "Numerical month of the year index ranging from 1 (January) to 12 (December)."
+        data_tests:
+          - not_null
+
+      - name: nu_day
+        description: "Numerical day of the month index ranging from 1 to 31."
+        data_tests:
+          - not_null
+
+      - name: nu_day_year
+        description: "Numerical day of the year (Julian calendar style representation) ranging from 1 to 366."
+        data_tests:
+          - not_null
+
+      - name: nu_day_week
+        description: "Numerical day of the week index following corporate standard parameters (e.g., 1 for Sunday or Monday depending on configuration)."
+        data_tests:
+          - not_null
+
+      - name: nu_quarter
+        description: "Numerical index of the fiscal or calendar quarter ranging from 1 to 4."
+        data_tests:
+          - not_null
+
+      - name: nu_semester
+        description: "Numerical index of the calendar semester ranging from 1 to 2."
+        data_tests:
+          - not_null
+
+      # --- Descriptive Time Parts ---
+      - name: ds_month
+        description: "Full textual description of the month name in corporate standard English (e.g., 'January', 'February')."
+        data_tests:
+          - not_null
+
+      - name: ds_month_abbreviated
+        description: "Three-letter standard abbreviation for the month name (e.g., 'Jan', 'Feb')."
+        data_tests:
+          - not_null
+
+      - name: ds_day_week
+        description: "Full textual description of the day of the week (e.g., 'Monday', 'Tuesday')."
+        data_tests:
+          - not_null
+
+      - name: ds_day_week_abbreviated
+        description: "Short standard text abbreviation for the day of the week (e.g., 'Mon', 'Tue')."
+        data_tests:
+          - not_null
+
+      - name: ds_quarter
+        description: "Corporate descriptive label for the calendar quarter identifier (e.g., 'Q1', 'Q2')."
+        data_tests:
+          - not_null
+
+      - name: ds_semester
+        description: "Corporate descriptive label for the calendar semester identifier (e.g., 'S1', 'S2')."
+        data_tests:
+          - not_null
+
+      # --- Analytical & Financial Flags ---
+      - name: in_weekend
+        description: "Boolean flag identifying whether the specific record date falls on a weekend (True/False)."
+        data_tests:
+          - not_null
+
+      - name: in_business_day
+        description: "Boolean flag isolating regional business, trading, and working days, excluding regional holidays and weekends."
+        data_tests:
+          - not_null
+
+      # --- Metadata Auditing ---
+      - name: updated_at
+        description: "System timestamp capturing the exact moment this specific calendar variation was generated and processed into the warehouse layer."
+        data_tests:
+          - not_null
+
+  - name: dim_customers
+    description: "SCD Type 2 customer dimension. Each row represents a distinct historical snapshot of a customer record, enabling point-in-time analysis of customer attributes at any past transaction date."
+    columns:
+      # --- Primary Key ---
+      - name: sk_customer_version
+        description: "Primary key of this dimension. Unique surrogate key generated from the combination of sk_customer and the snapshot update timestamp, guaranteeing one row per customer per change event."
+        data_tests:
+          - unique
+          - not_null
+
+      # --- Surrogate & Natural Keys ---
+      - name: sk_customer
+        description: "Stable surrogate key representing the customer entity across all historical versions. Multiple rows may share this key across different validity periods."
+        data_tests:
+          - not_null
+
+      - name: cd_customer
+        description: "Operational business key from the legacy InterSystems Caché system. Used as the join key for temporal lookups from fact tables."
+        data_tests:
+          - not_null
+
+      - name: nk_customer
+        description: "Original natural key from the source system before surrogate key assignment."
+        data_tests:
+          - not_null
+
+      # --- Descriptive Attributes ---
+      - name: ds_corporate_name
+        description: "Anonymized corporate or trade name of the customer. PII-masked via Faker at ingestion boundary."
+
+      - name: cd_cpf_cnpj
+        description: "Anonymized Brazilian tax identification number (CPF for individuals, CNPJ for legal entities). Masked at ingestion."
+
+      - name: ds_email
+        description: "Anonymized contact email address. Masked at ingestion."
+
+      - name: nr_cellphone
+        description: "Anonymized mobile phone number. Masked at ingestion."
+
+      - name: ds_adress
+        description: "Anonymized street address of the customer. Masked at ingestion."
+
+      - name: cd_cep
+        description: "Brazilian postal code (CEP) associated with the customer address."
+
+      - name: ds_city
+        description: "City associated with the customer address."
+
+      - name: ds_state
+        description: "State or province associated with the customer address."
+
+      - name: ds_country
+        description: "Country associated with the customer address."
+
+      - name: dt_start_customer
+        description: "Date when the customer record was first registered in the source system."
+
+      # --- SCD Type 2 Validity Fields ---
+      - name: valid_from
+        description: "Timestamp marking the beginning of this record's validity window. Set by the dbt snapshot engine when a change is detected."
+        data_tests:
+          - not_null
+
+      - name: valid_to
+        description: "Timestamp marking the end of this record's validity window. NULL indicates the current active record for this customer."
+
+      - name: is_current
+        description: "Boolean flag set to TRUE for the active customer record version (where valid_to IS NULL)."
+        data_tests:
+          - not_null
+
+  - name: dim_products
+    description: "SCD Type 2 product dimension. Each row captures a distinct historical version of a product's descriptive attributes, allowing fact tables to resolve the exact product state at the time of each transaction."
+    columns:
+      # --- Primary Key ---
+      - name: sk_product_version
+        description: "Primary key of this dimension. Unique surrogate key generated from the combination of sk_product and the snapshot update timestamp."
+        data_tests:
+          - unique
+          - not_null
+
+      # --- Surrogate & Natural Keys ---
+      - name: sk_product
+        description: "Stable surrogate key for the product entity across all historical versions."
+        data_tests:
+          - not_null
+
+      - name: cd_product
+        description: "Operational business key from the legacy source system. Used as the join key for temporal lookups from fact tables."
+        data_tests:
+          - not_null
+
+      # --- Descriptive Attributes ---
+      - name: ds_product
+        description: "Full product description as registered in the legacy system."
+
+      - name: ds_product_reference
+        description: "Extracted product reference code parsed from the product description via regex. Used as the primary product grouping key for analytics."
+
+      - name: ds_color
+        description: "Color attribute of the product SKU."
+
+      # --- SCD Type 2 Validity Fields ---
+      - name: valid_from
+        description: "Timestamp marking the beginning of this product record's validity window."
+        data_tests:
+          - not_null
+
+      - name: valid_to
+        description: "Timestamp marking the end of this product record's validity window. NULL indicates the current active version."
+
+      - name: is_current
+        description: "Boolean flag set to TRUE for the active product version."
+        data_tests:
+          - not_null
+
+  - name: dim_sales_representative
+    description: "SCD Type 2 sales representative dimension. Tracks changes to representative attributes over time, including commission structures, geographic assignments, and group consolidations from 100+ legacy codes into 26 operational groups."
+    columns:
+      # --- Primary Key ---
+      - name: sk_sales_representative_version
+        description: "Primary key of this dimension. Unique surrogate key generated from the combination of sk_sales_representative and the snapshot update timestamp."
+        data_tests:
+          - unique
+          - not_null
+
+      # --- Surrogate & Natural Keys ---
+      - name: sk_sales_representative
+        description: "Stable surrogate key for the representative entity across all historical versions."
+        data_tests:
+          - not_null
+
+      - name: cd_sales_representative
+        description: "Operational business key from the legacy source system. Used as the join key for temporal lookups from fact tables."
+        data_tests:
+          - not_null
+
+      - name: nk_sales_representatives
+        description: "Original natural key from the source system before surrogate key assignment."
+        data_tests:
+          - not_null
+
+      - name: id_sales_representative_uuid
+        description: "UUID generated during ingestion for cross-system traceability of the representative record."
+
+      # --- Descriptive Attributes ---
+      - name: nm_group_sales_representative
+        description: "Consolidated group name mapping the representative to one of 26 operational sales teams. Derived from a CASE-based consolidation of 100+ legacy codes."
+        data_tests:
+          - not_null
+
+      - name: ds_representative_name
+        description: "Anonymized full name of the sales representative. PII-masked at ingestion."
+
+      - name: cd_tax_id
+        description: "Anonymized Brazilian tax identification number (CPF/CNPJ) of the representative. Masked at ingestion."
+
+      - name: ds_email
+        description: "Anonymized email address of the representative. Masked at ingestion."
+
+      - name: ds_city
+        description: "City where the representative operates."
+
+      - name: ds_state
+        description: "State where the representative operates."
+
+      - name: ds_country
+        description: "Country where the representative operates."
+
+      - name: ds_region
+        description: "Broader geographic region assigned to the representative for territory management."
+
+      - name: cd_ibge_city
+        description: "Brazilian IBGE city code for the representative's operational base."
+
+      - name: ds_geo_location
+        description: "Descriptive geographic location tag associated with the representative."
+
+      # --- Commission Structure ---
+      - name: pc_commission_default
+        description: "Default commission percentage applied to the representative's standard sales."
+
+      - name: pc_commission_invoiced
+        description: "Commission percentage applied specifically to invoiced (billed) order amounts."
+
+      - name: pc_commission_paid
+        description: "Commission percentage applied to fully paid orders."
+
+      - name: cd_commission_type
+        description: "Code identifying the commission calculation rule type assigned to the representative."
+
+      - name: ds_commission_type
+        description: "Descriptive label for the commission calculation rule type."
+
+      # --- Status ---
+      - name: cd_status
+        description: "Status code indicating whether the representative is active, inactive, or suspended."
+        data_tests:
+          - not_null
+
+      - name: ds_status
+        description: "Human-readable description of the representative's operational status."
+        data_tests:
+          - not_null
+
+      # --- SCD Type 2 Validity Fields ---
+      - name: valid_from
+        description: "Timestamp marking the beginning of this representative record's validity window."
+        data_tests:
+          - not_null
+
+      - name: valid_to
+        description: "Timestamp marking the end of this representative record's validity window. NULL indicates the current active version."
+
+      - name: is_current
+        description: "Boolean flag set to TRUE for the active representative version."
+        data_tests:
+          - not_null
+
+  - name: dim_collection
+    description: "Collection dimension representing seasonal product campaigns. Each record defines a named commercial collection with its operational date window and links to the prior-year equivalent collection for year-over-year comparative analysis."
+    columns:
+      # --- Primary Key ---
+      - name: sk_collection_version
+        description: "Primary key of this dimension. Surrogate key generated from sk_collection and the processing timestamp."
+        data_tests:
+          - unique
+          - not_null
+
+      # --- Surrogate & Natural Keys ---
+      - name: sk_collection
+        description: "Stable surrogate key representing the collection entity."
+        data_tests:
+          - not_null
+
+      - name: id_collection
+        description: "Sequential integer business key identifying the collection. Used as the join key from fact tables."
+        data_tests:
+          - unique
+          - not_null
+
+      # --- Descriptive Attributes ---
+      - name: collection_name
+        description: "Human-readable name of the seasonal collection (e.g., 'WINTER23', 'SPRING26')."
+        data_tests:
+          - not_null
+
+      - name: start_date
+        description: "First date of the collection's commercial window. Used to map order issue dates to the correct collection period."
+        data_tests:
+          - not_null
+
+      - name: end_date
+        description: "Last date of the collection's commercial window."
+        data_tests:
+          - not_null
+
+      - name: id_collection_ly
+        description: "Reference to the prior-year equivalent collection ID, enabling year-over-year sales comparisons within the same seasonal period."
+
+      - name: operation_filter
+        description: "Source system integration filter tag used to scope ingestion to the correct operational context."
+
+      # --- Metadata ---
+      - name: updated_at
+        description: "Timestamp of when this collection record was last processed into the Gold layer."
+        data_tests:
+          - not_null

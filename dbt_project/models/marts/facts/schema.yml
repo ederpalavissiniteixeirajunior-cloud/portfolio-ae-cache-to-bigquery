@@ -1,0 +1,201 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: "Fact table containing transaction header data for sales orders. It resolves dimensional surrogate keys using point-in-time snapshot matching against SCD Type 2 entities to guarantee correct historical grouping."
+    columns:
+      # --- Primary Key ---
+      - name: sk_order_version
+        description: "Surrogate key of the fact table generated via hash of natural business attributes."
+        data_tests:
+          - unique
+          - not_null
+
+      # --- Degenerate Dimensions ---
+      - name: cd_order
+        description: "Natural business key identifying the operational order in the legacy source system."
+        data_tests:
+          - not_null
+
+      # --- Dimension Foreign Keys (SCD Type 2) ---
+      - name: sk_customer_version
+        description: "Foreign key referencing the exact historical snapshot version of the customer within dim_customers, resolved via point-in-time join on dt_issued."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: sk_customer_version
+
+      - name: sk_sales_representative_version
+        description: "Foreign key referencing the exact historical snapshot version of the sales representative within dim_sales_representative, resolved via point-in-time join on dt_issued."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_sales_representative')
+              field: sk_sales_representative_version
+
+      - name: sk_collection_version
+        description: "Foreign key pointing to the active catalog or campaign group collection record."
+        data_tests:
+          - relationships:
+              to: ref('dim_collection')
+              field: sk_collection_version
+
+      - name: sk_time_version
+        description: "Foreign key mapping the order issue date to the dim_calendar axis."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_calendar')
+              field: sk_time_version
+
+      # --- Measures ---
+      - name: vl_original_total
+        description: "The baseline or original full monetary gross total amount recorded during ingestion before cancellations."
+        data_tests:
+          - not_null
+
+      # --- Descriptive ---
+      - name: nm_status
+        description: "Current operational status tag assigned to the order header (e.g., Billed, Canceled, Pending)."
+        data_tests:
+          - not_null
+
+      # --- Event Date ---
+      - name: dt_issued
+        description: "The official calendar date when the transaction took place. Used as the partition key in BigQuery."
+        data_tests:
+          - not_null
+
+      # --- Metadata ---
+      - name: updated_at
+        description: "Timestamp of when this record was last processed into the Gold layer."
+        data_tests:
+          - not_null
+
+  - name: fct_order_items
+    description: "Granular fact table storing transactional order items at the individual SKU level. It merges order headers and line-level items, resolving historical dimensions using Slowly Changing Dimensions (SCD Type 2) through point-in-time joins on transaction dates."
+    columns:
+      # --- Primary Key ---
+      - name: sk_order_item
+        description: "Unique surrogate key generated via hashing for each specific item row within an order. Serves as the primary key of this fact table."
+        data_tests:
+          - unique
+          - not_null
+
+      # --- Dimension Surrogate Keys (SCD Type 2 & Star Schema Integration) ---
+      - name: sk_customer_version
+        description: "Surrogate key pointing to the specific historical version of the customer record in dim_customers valid at the exact time of order issuance."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: sk_customer_version
+
+      - name: sk_product_version
+        description: "Surrogate key pointing to the specific historical version of the product (SKU) record in dim_products valid at the exact time of order issuance."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: sk_product_version
+
+      - name: sk_sales_representative_version
+        description: "Surrogate key pointing to the specific historical version of the sales representative in dim_sales_representative valid at the exact time of order issuance."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_sales_representative')
+              field: sk_sales_representative_version
+
+      - name: sk_collection_version
+        description: "Surrogate key linking the transaction to the marketing or seasonal product catalog collection dimension."
+        data_tests:
+          - relationships:
+              to: ref('dim_collection')
+              field: sk_collection_version
+
+      - name: sk_time_version
+        description: "Surrogate key linking the transaction date (dt_issued) directly to the centralized enterprise calendar dimension."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_calendar')
+              field: sk_time_version
+
+      # --- Degenerate Dimensions (Natural Keys for Operational Auditing) ---
+      - name: cd_order
+        description: "The original operational Natural Key (NK) identifier for the order header from the legacy InterSystems Caché system."
+        data_tests:
+          - not_null
+
+      - name: cd_product
+        description: "Legacy operational natural key for the product item."
+        data_tests:
+          - not_null
+
+      - name: cd_customer
+        description: "Legacy operational natural key for the customer who placed the order."
+        data_tests:
+          - not_null
+
+      - name: cd_sales_representative
+        description: "Legacy operational natural key for the sales representative assigned to the sale."
+        data_tests:
+          - not_null
+
+      - name: cd_company
+        description: "Company branch or corporate entity code where the transaction was registered."
+        data_tests:
+          - not_null
+
+      # --- Event Dates & Timestamps ---
+      - name: dt_issued
+        description: "The official transaction/invoice issuance date. This field acts as the routing key for data partitioning in BigQuery."
+        data_tests:
+          - not_null
+
+      - name: updated_at
+        description: "Metadata timestamp indicating when this record was processed into the Gold layer warehouse table."
+        data_tests:
+          - not_null
+
+      # --- Quantities (Measures) ---
+      - name: qt_ordered
+        description: "The total quantity of items originally requested by the client in the purchase order."
+        data_tests:
+          - not_null
+
+      - name: qt_fulfilled
+        description: "The physical quantity of items successfully picked, packed, and shipped out of stock."
+
+      - name: qt_blocked
+        description: "The quantity of items temporarily placed on hold due to credit limits, stock discrepancies, or fiscal approval gates."
+
+      - name: qt_canceled
+        description: "The quantity of items removed or invalidated from the order lifecycle before delivery."
+
+      # --- Monetary Prices & Financial Values ---
+      - name: vl_unit_price
+        description: "Gross listing unit price of the item before any adjustments, taxes, or behavioral volume discounts."
+
+      - name: vl_net_unit_price
+        description: "Net operating unit price after operational deduplications and discounts are dynamically calculated."
+
+      - name: vl_unit_price_me
+        description: "Unit price mapped in foreign currency for international market benchmarking."
+
+      - name: vl_original_amount
+        description: "Total gross amount (qt_ordered * vl_unit_price) representing the baseline raw revenue intent."
+
+      - name: vl_billed_amount
+        description: "Actual captured revenue matching successfully processed or delivered line items."
+
+      - name: vl_canceled_amount
+        description: "Financial loss or reversed revenue metrics linked explicitly to item cancellations."
+
+      - name: vl_balance_amount
+        description: "Outstanding monetary balance remaining to be captured or fulfilled for this line item."
+
+      - name: vl_total_me
+        description: "Total financial amount calculated in foreign currency."
