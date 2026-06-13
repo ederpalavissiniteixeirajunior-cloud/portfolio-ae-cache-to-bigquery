@@ -12,7 +12,7 @@ intermediate as (
         cd_cpf_cnpj,
         lower(ds_email) as ds_email,
         nr_cellphone,
-        ds_adress,
+        ds_address,
         cd_cep,
         ds_city,
         ds_state,

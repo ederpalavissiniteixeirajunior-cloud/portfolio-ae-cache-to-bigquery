@@ -145,7 +145,7 @@ models:
       - name: nr_cellphone
         description: "Anonymized mobile phone number. Masked at ingestion."
 
-      - name: ds_adress
+      - name: ds_address
         description: "Anonymized street address of the customer. Masked at ingestion."
 
       - name: cd_cep

@@ -14,7 +14,7 @@ intermediate as (
     where 
         1=1
         AND cd_company = 1
-        AND ds_entry_mask03 LIKE '%COLCCI'
+        AND ds_entry_mask03 LIKE '%{{ env_var("DBT_BRAND_SCOPE") }}'
         AND ds_entry_mask01 LIKE '8%'
 )
 

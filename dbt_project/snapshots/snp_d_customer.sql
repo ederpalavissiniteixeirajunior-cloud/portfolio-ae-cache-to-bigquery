@@ -11,7 +11,7 @@
         'cd_cpf_cnpj',
         'ds_email', 
         'nr_cellphone',
-        'ds_adress',
+        'ds_address',
         'cd_cep',
         'ds_city', 
         'ds_state'

@@ -24,7 +24,7 @@ renamed as (
         cast(dataHoraGeracao as datetime) as dt_creation,
         {{ mask_pii_info('descricaoGrupoCNPJ') }} as ds_group_cnpj,
         {{ mask_pii_info('email', 'email') }} as ds_email,
-        {{ mask_pii_info('endereco') }} as ds_adress,
+        {{ mask_pii_info('endereco') }} as ds_address,
         cast(estado as string) as ds_state,
         cast(geoCliente as string) as geoCliente,
         cast(idCliente as string) as id_customer,
