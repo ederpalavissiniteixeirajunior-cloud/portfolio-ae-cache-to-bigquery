@@ -11,7 +11,67 @@ permissions:
   id-token: write
 
 jobs:
+  dbt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dbt
+        run: pip install dbt-core dbt-bigquery
+
+      - name: Create GCP credentials
+        run: |
+          cat <<EOF > /tmp/gcp-key.json
+          ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          EOF
+
+      - name: Create dbt profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat <<EOF > ~/.dbt/profiles.yml
+          portfolio_ae:
+            target: prod
+            outputs:
+              prod:
+                type: bigquery
+                method: service-account
+                project: portfolio-ae-vendas
+                dataset: raw
+                keyfile: /tmp/gcp-key.json
+                threads: 4
+                timeout_seconds: 300
+                location: US
+                priority: interactive
+          EOF
+
+      - name: dbt deps
+        working-directory: ./dbt_project
+        run: dbt deps
+
+      - name: dbt seed
+        working-directory: ./dbt_project
+        run: dbt seed
+
+      - name: dbt run
+        working-directory: ./dbt_project
+        run: dbt run
+        env:
+          DBT_BRAND_SCOPE: ${{ secrets.DBT_BRAND_SCOPE }}
+
+      - name: dbt test
+        working-directory: ./dbt_project
+        run: dbt test
+        env:
+          DBT_BRAND_SCOPE: ${{ secrets.DBT_BRAND_SCOPE }}
+
   build:
+    needs: dbt
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +104,7 @@ jobs:
         working-directory: ./dashboard
         env:
           EVIDENCE_BASE_PATH: /portfolio-ae-cache-to-bigquery
-      
+
       - name: Disable Jekyll and Fix Paths
         run: touch ./dashboard/build/.nojekyll
 

@@ -1,0 +1,106 @@
+version: 2
+
+sources:
+  - name: raw_cache
+    description: >
+      Raw Bronze layer tables loaded daily from the on-premises InterSystems Caché ERP
+      via the Python edge ingestion pipeline. All PII fields are anonymized in memory
+      using Faker before transmission to BigQuery. Tables are fully refreshed on each
+      daily cron run (WRITE_TRUNCATE strategy).
+    database: portfolio-ae-vendas
+    schema: raw
+    loaded_at_field: extracted_at
+    freshness:
+      warn_after: {count: 25, period: hour}
+      error_after: {count: 49, period: hour}
+
+    tables:
+      - name: clientes
+        description: >
+          Customer master records from the legacy ERP. Contains identity, contact,
+          geographic, and commercial segment data. All PII columns (name, email,
+          phone, address, tax ID) are anonymized at ingestion.
+        columns:
+          - name: ID
+            description: "Natural key assigned by InterSystems Caché."
+            data_tests:
+              - not_null
+          - name: codCliente
+            description: "Operational business key used for all downstream joins."
+            data_tests:
+              - not_null
+              - unique
+          - name: extracted_at
+            description: "Timestamp injected by the ingestion engine marking when this batch was extracted."
+            data_tests:
+              - not_null
+
+      - name: pedidos
+        description: >
+          Order header records from the legacy ERP. Each row represents a sales order
+          at the header level, including status, dates, and financial totals.
+        columns:
+          - name: ID
+            description: "Natural key assigned by InterSystems Caché."
+            data_tests:
+              - not_null
+          - name: codPedido
+            description: "Operational order number used for downstream joins and audit trail."
+            data_tests:
+              - not_null
+              - unique
+          - name: extracted_at
+            description: "Timestamp injected by the ingestion engine marking when this batch was extracted."
+            data_tests:
+              - not_null
+
+      - name: vendas_itens
+        description: >
+          Order line-item records. Each row represents a single SKU within a sales order,
+          carrying quantity, unit price, and financial breakdown at the item level.
+          Loaded in configurable chunks due to table size.
+        columns:
+          - name: extracted_at
+            description: "Timestamp injected by the ingestion engine marking when this batch was extracted."
+            data_tests:
+              - not_null
+
+      - name: produtos
+        description: >
+          Product master records from the legacy ERP. Contains a rich attribute hierarchy
+          including engineering codes, color, size, and multi-level classification masks.
+          Filtered downstream to the active brand scope via DBT_BRAND_SCOPE.
+        columns:
+          - name: ID
+            description: "Natural key assigned by InterSystems Caché."
+            data_tests:
+              - not_null
+          - name: codProduto
+            description: "Operational product code used for downstream joins."
+            data_tests:
+              - not_null
+              - unique
+          - name: extracted_at
+            description: "Timestamp injected by the ingestion engine marking when this batch was extracted."
+            data_tests:
+              - not_null
+
+      - name: representantes
+        description: >
+          Sales representative master records. Contains geographic assignment,
+          commission structure, and operational status. All PII columns (name,
+          email, tax ID) are anonymized at ingestion.
+        columns:
+          - name: ID
+            description: "Natural key assigned by InterSystems Caché."
+            data_tests:
+              - not_null
+          - name: codRepresentante
+            description: "Operational representative code used for all downstream joins."
+            data_tests:
+              - not_null
+              - unique
+          - name: extracted_at
+            description: "Timestamp injected by the ingestion engine marking when this batch was extracted."
+            data_tests:
+              - not_null

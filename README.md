@@ -192,7 +192,7 @@ npm run dev
 
 ## About
 
-Built by **Eder Palavissini Jr.** — BI Manager & Senior Analytics Engineer with 8+ years delivering data platforms across retail, fashion, and e-commerce.
+Built by **Eder Palavissini Jr.** — BI Manager & Senior Analytics Engineer with 5+ years delivering data platforms across retail, fashion, and e-commerce.
 
 - **LinkedIn:** [linkedin.com/in/ederpalavissiniteixeirajunior](https://www.linkedin.com/in/ederpalavissiniteixeirajunior)
 - **GitHub:** [github.com/ederpalavissiniteixeirajunior-cloud](https://github.com/ederpalavissiniteixeirajunior-cloud)
