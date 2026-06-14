@@ -90,6 +90,7 @@ jobs:
 
       - name: Notify Slack on failure
         if: failure()
+        continue-on-error: true
         uses: slackapi/slack-github-action@v2
         with:
           payload: |
@@ -166,3 +167,16 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Notify Slack on success
+        if: success()
+        continue-on-error: true
+        uses: slackapi/slack-github-action@v2
+        with:
+          payload: |
+            {
+              "text": ":large_green_circle: *Portfolio AE Pipeline Succeeded*\nDashboard updated: ${{ steps.deployment.outputs.page_url }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

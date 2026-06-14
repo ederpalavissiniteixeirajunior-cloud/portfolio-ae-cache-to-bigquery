@@ -4,7 +4,7 @@ with source as (
 
 final as (
     select
-        {{ dbt_utils.generate_surrogate_key(['sk_collection', 'updated_at']) }} as sk_collection_version,
+        {{ dbt_utils.generate_surrogate_key(['sk_collection']) }} as sk_collection_version,
         sk_collection, 
         id_collection,
         collection_name,
