@@ -13,6 +13,8 @@ permissions:
 jobs:
   dbt:
     runs-on: ubuntu-latest
+    env:
+      DBT_BRAND_SCOPE: ${{ secrets.DBT_BRAND_SCOPE }}
     steps:
       - uses: actions/checkout@v4
 
@@ -61,14 +63,10 @@ jobs:
       - name: dbt run
         working-directory: ./dbt_project
         run: dbt run
-        env:
-          DBT_BRAND_SCOPE: ${{ secrets.DBT_BRAND_SCOPE }}
 
       - name: dbt test
         working-directory: ./dbt_project
         run: dbt test
-        env:
-          DBT_BRAND_SCOPE: ${{ secrets.DBT_BRAND_SCOPE }}
 
   build:
     needs: dbt
