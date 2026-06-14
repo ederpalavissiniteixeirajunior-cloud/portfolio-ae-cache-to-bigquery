@@ -105,3 +105,25 @@ sources:
             description: "Timestamp injected by the ingestion engine marking when this batch was extracted."
             data_tests:
               - not_null
+
+      # --- Future sources (ingestion planned, not yet modeled in dbt) ---
+
+      - name: estoque_produto
+        description: "Product inventory levels per warehouse location. Planned for future stock availability analysis."
+        config:
+          freshness: null
+
+      - name: tabela_preco_item
+        description: "Price table line items per product and commercial condition. Planned for margin and pricing analytics."
+        config:
+          freshness: null
+
+      - name: contas_receber
+        description: "Accounts receivable records. Planned for cash flow and payment behavior analysis."
+        config:
+          freshness: null
+
+      - name: nota_fiscal
+        description: "Fiscal invoice records. Planned for tax compliance and revenue recognition analytics."
+        config:
+          freshness: null

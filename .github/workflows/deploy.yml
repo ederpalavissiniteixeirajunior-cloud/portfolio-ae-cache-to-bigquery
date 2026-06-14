@@ -48,7 +48,7 @@ jobs:
                 keyfile: /tmp/gcp-key.json
                 threads: 4
                 timeout_seconds: 300
-                location: US
+                location: southamerica-east1
                 priority: interactive
           EOF
 
