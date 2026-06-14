@@ -45,11 +45,11 @@ final_join as (
     
     left join dim_customers c
         on f.cd_customer = c.cd_customer
-        and f.dt_issued between c.valid_from and coalesce(c.valid_to, '9999-12-31')
+        and f.dt_issued between DATE(c.valid_from) and coalesce(DATE(c.valid_to), '9999-12-31')
 
     left join dim_representatives r
         on f.cd_sales_representative = r.cd_sales_representative
-        and f.dt_issued between r.valid_from and coalesce(r.valid_to, '9999-12-31')
+        and f.dt_issued between DATE(r.valid_from) and coalesce(DATE(r.valid_to), '9999-12-31')
     
     left join dim_collections col 
         on f.id_collection = col.id_collection

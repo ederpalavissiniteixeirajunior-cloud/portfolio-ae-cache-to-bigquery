@@ -85,18 +85,18 @@ final_join as (
         
     left join dim_customers c
         on h.cd_customer = c.cd_customer
-        and h.dt_issued between c.valid_from and coalesce(c.valid_to, '9999-12-31')
+        and h.dt_issued between DATE(c.valid_from) and coalesce(DATE(c.valid_to), '9999-12-31')
 
     left join dim_representatives r
         on h.cd_sales_representative = r.cd_sales_representative
-        and h.dt_issued between r.valid_from and coalesce(r.valid_to, '9999-12-31')
+        and h.dt_issued between DATE(r.valid_from) and coalesce(DATE(r.valid_to), '9999-12-31')
         
     left join dim_collections col 
         on h.id_collection = col.id_collection
         
     left join dim_products p
         on i.cd_product = p.cd_product
-        and h.dt_issued between p.valid_from and coalesce(p.valid_to, '9999-12-31')
+        and h.dt_issued between DATE(p.valid_from) and coalesce(DATE(p.valid_to), '9999-12-31')
         
     left join dim_calendar cal 
         on h.dt_issued = cal.dt_date
