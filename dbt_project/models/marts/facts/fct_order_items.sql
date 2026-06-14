@@ -1,5 +1,7 @@
 {{ config(
-    materialized='table',
+    materialized='incremental',
+    incremental_strategy='insert_overwrite',
+    on_schema_change='fail',
     partition_by={
       "field": "dt_issued",
       "data_type": "date",
@@ -79,9 +81,12 @@ final_join as (
         current_timestamp() as updated_at 
 
     from item_sales i
-   
-    inner join order_header h 
+
+    inner join order_header h
         on i.cd_order = h.cd_order
+        {% if is_incremental() %}
+        and h.dt_issued >= date_sub(current_date(), interval 3 day)
+        {% endif %}
         
     left join dim_customers c
         on h.cd_customer = c.cd_customer

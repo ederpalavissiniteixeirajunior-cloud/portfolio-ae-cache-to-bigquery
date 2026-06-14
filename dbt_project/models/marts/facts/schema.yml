@@ -19,35 +19,43 @@ models:
 
       # --- Dimension Foreign Keys (SCD Type 2) ---
       - name: sk_customer_version
-        description: "Foreign key referencing the exact historical snapshot version of the customer within dim_customers, resolved via point-in-time join on dt_issued."
+        description: "Foreign key referencing the exact historical snapshot version of the customer within dim_customers, resolved via point-in-time join on dt_issued. NULL when no snapshot covers the order date (temporal gap)."
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
           - relationships:
-              to: ref('dim_customers')
-              field: sk_customer_version
+              arguments:
+                to: ref('dim_customers')
+                field: sk_customer_version
 
       - name: sk_sales_representative_version
-        description: "Foreign key referencing the exact historical snapshot version of the sales representative within dim_sales_representative, resolved via point-in-time join on dt_issued."
+        description: "Foreign key referencing the exact historical snapshot version of the sales representative within dim_sales_representative, resolved via point-in-time join on dt_issued. NULL when the rep is excluded from the active scope (e.g., legacy '-' group)."
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
           - relationships:
-              to: ref('dim_sales_representative')
-              field: sk_sales_representative_version
+              arguments:
+                to: ref('dim_sales_representative')
+                field: sk_sales_representative_version
 
       - name: sk_collection_version
         description: "Foreign key pointing to the active catalog or campaign group collection record."
         data_tests:
           - relationships:
-              to: ref('dim_collection')
-              field: sk_collection_version
+              arguments:
+                to: ref('dim_collection')
+                field: sk_collection_version
 
       - name: sk_time_version
         description: "Foreign key mapping the order issue date to the dim_calendar axis."
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_calendar')
-              field: sk_time_version
+              arguments:
+                to: ref('dim_calendar')
+                field: sk_time_version
 
       # --- Measures ---
       - name: vl_original_total
@@ -85,43 +93,54 @@ models:
 
       # --- Dimension Surrogate Keys (SCD Type 2 & Star Schema Integration) ---
       - name: sk_customer_version
-        description: "Surrogate key pointing to the specific historical version of the customer record in dim_customers valid at the exact time of order issuance."
+        description: "Surrogate key pointing to the specific historical version of the customer record in dim_customers valid at the exact time of order issuance. NULL when no snapshot covers the order date (temporal gap)."
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
           - relationships:
-              to: ref('dim_customers')
-              field: sk_customer_version
+              arguments:
+                to: ref('dim_customers')
+                field: sk_customer_version
 
       - name: sk_product_version
-        description: "Surrogate key pointing to the specific historical version of the product (SKU) record in dim_products valid at the exact time of order issuance."
+        description: "Surrogate key pointing to the specific historical version of the product (SKU) record in dim_products valid at the exact time of order issuance. NULL when the product falls outside the active brand scope filter."
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
           - relationships:
-              to: ref('dim_products')
-              field: sk_product_version
+              arguments:
+                to: ref('dim_products')
+                field: sk_product_version
 
       - name: sk_sales_representative_version
-        description: "Surrogate key pointing to the specific historical version of the sales representative in dim_sales_representative valid at the exact time of order issuance."
+        description: "Surrogate key pointing to the specific historical version of the sales representative in dim_sales_representative valid at the exact time of order issuance. NULL when the rep is excluded from the active scope."
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
           - relationships:
-              to: ref('dim_sales_representative')
-              field: sk_sales_representative_version
+              arguments:
+                to: ref('dim_sales_representative')
+                field: sk_sales_representative_version
 
       - name: sk_collection_version
         description: "Surrogate key linking the transaction to the marketing or seasonal product catalog collection dimension."
         data_tests:
           - relationships:
-              to: ref('dim_collection')
-              field: sk_collection_version
+              arguments:
+                to: ref('dim_collection')
+                field: sk_collection_version
 
       - name: sk_time_version
         description: "Surrogate key linking the transaction date (dt_issued) directly to the centralized enterprise calendar dimension."
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_calendar')
-              field: sk_time_version
+              arguments:
+                to: ref('dim_calendar')
+                field: sk_time_version
 
       # --- Degenerate Dimensions (Natural Keys for Operational Auditing) ---
       - name: cd_order

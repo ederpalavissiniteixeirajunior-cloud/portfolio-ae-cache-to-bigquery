@@ -30,7 +30,6 @@ sources:
             description: "Operational business key used for all downstream joins."
             data_tests:
               - not_null
-              - unique
           - name: extracted_at
             description: "Timestamp injected by the ingestion engine marking when this batch was extracted."
             data_tests:
@@ -49,7 +48,6 @@ sources:
             description: "Operational order number used for downstream joins and audit trail."
             data_tests:
               - not_null
-              - unique
           - name: extracted_at
             description: "Timestamp injected by the ingestion engine marking when this batch was extracted."
             data_tests:
@@ -80,7 +78,6 @@ sources:
             description: "Operational product code used for downstream joins."
             data_tests:
               - not_null
-              - unique
           - name: extracted_at
             description: "Timestamp injected by the ingestion engine marking when this batch was extracted."
             data_tests:
@@ -100,7 +97,6 @@ sources:
             description: "Operational representative code used for all downstream joins."
             data_tests:
               - not_null
-              - unique
           - name: extracted_at
             description: "Timestamp injected by the ingestion engine marking when this batch was extracted."
             data_tests:

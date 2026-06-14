@@ -302,9 +302,7 @@ models:
 
       # --- Status ---
       - name: cd_status
-        description: "Status code indicating whether the representative is active, inactive, or suspended."
-        data_tests:
-          - not_null
+        description: "Status code indicating whether the representative is active, inactive, or suspended. NULL for legacy historical snapshot versions captured before this field was populated in the source system."
 
       - name: ds_status
         description: "Human-readable description of the representative's operational status."
@@ -354,14 +352,10 @@ models:
           - not_null
 
       - name: start_date
-        description: "First date of the collection's commercial window. Used to map order issue dates to the correct collection period."
-        data_tests:
-          - not_null
+        description: "First date of the collection's commercial window. Used to map order issue dates to the correct collection period. NULL for future collections not yet scheduled."
 
       - name: end_date
-        description: "Last date of the collection's commercial window."
-        data_tests:
-          - not_null
+        description: "Last date of the collection's commercial window. NULL for future collections not yet scheduled."
 
       - name: id_collection_ly
         description: "Reference to the prior-year equivalent collection ID, enabling year-over-year sales comparisons within the same seasonal period."

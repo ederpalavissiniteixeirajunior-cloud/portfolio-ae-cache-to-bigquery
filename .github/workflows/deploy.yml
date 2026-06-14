@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '0 10 * * *'  # 07:00 BRT (UTC-3) — runs after VPS ingestion window closes
 
 permissions:
   contents: read
@@ -60,6 +62,10 @@ jobs:
         working-directory: ./dbt_project
         run: dbt seed
 
+      - name: dbt snapshot
+        working-directory: ./dbt_project
+        run: dbt snapshot
+
       - name: dbt run
         working-directory: ./dbt_project
         run: dbt run
@@ -67,6 +73,32 @@ jobs:
       - name: dbt test
         working-directory: ./dbt_project
         run: dbt test
+
+      - name: dbt docs generate
+        working-directory: ./dbt_project
+        run: dbt docs generate
+
+      - name: Upload dbt docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-docs
+          path: |
+            ./dbt_project/target/index.html
+            ./dbt_project/target/manifest.json
+            ./dbt_project/target/catalog.json
+          retention-days: 1
+
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v2
+        with:
+          payload: |
+            {
+              "text": ":red_circle: *Portfolio AE Pipeline Failed*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View failed run>"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
   build:
     needs: dbt
@@ -102,6 +134,19 @@ jobs:
         working-directory: ./dashboard
         env:
           EVIDENCE_BASE_PATH: /portfolio-ae-cache-to-bigquery
+
+      - name: Download dbt docs
+        uses: actions/download-artifact@v4
+        with:
+          name: dbt-docs
+          path: ./dbt-docs-temp
+
+      - name: Embed dbt docs into Evidence build
+        run: |
+          mkdir -p ./dashboard/build/dbt-docs
+          cp ./dbt-docs-temp/index.html  ./dashboard/build/dbt-docs/
+          cp ./dbt-docs-temp/manifest.json ./dashboard/build/dbt-docs/
+          cp ./dbt-docs-temp/catalog.json  ./dashboard/build/dbt-docs/
 
       - name: Disable Jekyll and Fix Paths
         run: touch ./dashboard/build/.nojekyll

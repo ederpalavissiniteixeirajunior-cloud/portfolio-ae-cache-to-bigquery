@@ -1,5 +1,6 @@
 # Legacy-to-Cloud Modern Data Stack Platform
 
+[![CI/CD Pipeline](https://github.com/ederpalavissiniteixeirajunior-cloud/portfolio-ae-cache-to-bigquery/actions/workflows/deploy.yml/badge.svg)](https://github.com/ederpalavissiniteixeirajunior-cloud/portfolio-ae-cache-to-bigquery/actions/workflows/deploy.yml)
 [![dbt Core](https://img.shields.io/badge/dbt--core-v1.10%2B-orange?logo=dbt)](https://github.com/dbt-labs/dbt-core)
 [![BigQuery](https://img.shields.io/badge/Data%20Warehouse-Google%20BigQuery-blue?logo=google-cloud)](https://cloud.google.com/bigquery)
 [![Evidence.dev](https://img.shields.io/badge/BI--as--Code-Evidence.dev-brightgreen)](https://evidence.dev/)
@@ -12,11 +13,14 @@ An end-to-end Analytics Engineering platform that migrates transactional data fr
 
 ---
 
-## Live Dashboard
+## Live Links
 
-**[View the live Evidence.dev dashboard →](https://ederpalavissiniteixeirajunior-cloud.github.io/portfolio-ae-cache-to-bigquery)**
+| | Link |
+|---|---|
+| **Dashboard** | [Evidence.dev Sales Analytics →](https://ederpalavissiniteixeirajunior-cloud.github.io/portfolio-ae-cache-to-bigquery) |
+| **Data Lineage** | [dbt Docs — DAG & Column Catalog →](https://ederpalavissiniteixeirajunior-cloud.github.io/portfolio-ae-cache-to-bigquery/dbt-docs) |
 
-The dashboard is automatically rebuilt and deployed via GitHub Actions on every push to `main`.
+Both are automatically rebuilt and deployed via GitHub Actions on every push to `main` and daily at 07:00 BRT.
 
 ---
 

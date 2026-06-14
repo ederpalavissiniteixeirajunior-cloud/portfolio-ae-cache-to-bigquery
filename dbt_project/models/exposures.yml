@@ -1,0 +1,27 @@
+version: 2
+
+exposures:
+  - name: sales_analytics_dashboard
+    type: dashboard
+    maturity: high
+    url: https://ederpalavissiniteixeirajunior-cloud.github.io/portfolio-ae-cache-to-bigquery
+    description: >
+      Evidence.dev BI-as-Code dashboard presenting sales performance analytics
+      for a fashion brand migrated from a 20-year-old on-premises ERP to BigQuery.
+      Covers executive KPIs, collection performance, sales representative rankings,
+      top products, and cumulative sales-vs-target tracking. Deployed automatically
+      to GitHub Pages on every successful dbt run.
+    depends_on:
+      - ref('vw_executive_kpis')
+      - ref('vw_orders_collection')
+      - ref('vw_reps_performance_base')
+      - ref('vw_top_products_base')
+      - ref('sales_vs_target_cumulative')
+    owner:
+      name: Eder Palavissini Jr.
+      email: ederpalavissiniteixeirajunior@gmail.com
+    config:
+      tags:
+        - evidence
+        - github-pages
+        - production
