@@ -125,6 +125,72 @@ dbt test results: PASS (All core contracts and referential mappings validated)
 
 ---
 
+## 🔎 Architecture Decisions & Operational Findings
+
+---
+
+### 1. BigQuery Partition Expiration Behavior
+
+**Symptom:** `gold.fct_orders` contained only 247 rows despite 4,907 orders existing in the Silver intermediate table. All data older than ~60 days was absent from every downstream analytics view with no pipeline error.
+
+**Root cause:** Every dataset in this project inherited a `default_partition_expiration_ms` of **5,184,000,000 ms (60 days)** from the BigQuery project defaults. The critical behavior: for date-partitioned tables, BigQuery counts expiration **from the partition key value** (`dt_issued`), not from the partition creation timestamp.
+
+A partition with `dt_issued = 2025-04-01`, written today during a `dbt run`, is considered immediately expired — because that date is more than 60 days in the past. BigQuery deletes it within minutes, silently, after `dbt` exits successfully.
+
+<pre style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; overflow-x: auto; line-height: 1.5;">
+-- Diagnostic: same SELECT returned 4,907 rows; CREATE TABLE returned 247.
+-- Difference isolated to the PARTITION BY clause in the DDL.
+SELECT COUNT(*) FROM silver.itm_f_orders;          -- 4,907 (unpartitioned TABLE)
+SELECT COUNT(*) FROM gold.fct_orders;              -- 247   (partitioned, expiration active)
+</pre>
+
+**Resolution:** The dbt model config explicitly overrides the dataset default via BigQuery's `OPTIONS()` clause at table creation time:
+
+<pre style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; overflow-x: auto; line-height: 1.5;">
+&#123;&#123; config(
+    materialized='table',
+    partition_by=&#123;"field": "dt_issued", "data_type": "date", "granularity": "day"&#125;,
+    partition_expiration_days=3650   -- overrides the 60-day dataset default
+) &#125;&#125;
+</pre>
+
+> **Monitoring implication:** This class of failure produces no pipeline error — `dbt run` exits cleanly and reports the correct row count at write time. The correct safeguard is a dbt test with a `config: error_if: "< N"` row-count threshold on partitioned fact tables.
+
+---
+
+### 2. SCD Type 2 Temporal Coverage Gap
+
+**Context:** The Silver layer uses dbt Snapshots to maintain SCD Type 2 history for customers, products, and sales representatives. Fact tables resolve dimension state at transaction time through a temporal join:
+
+<pre style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; overflow-x: auto; line-height: 1.5;">
+LEFT JOIN dim_sales_representative r
+    ON f.cd_sales_representative = r.cd_sales_representative
+    AND f.dt_issued BETWEEN DATE(r.valid_from)
+                        AND COALESCE(DATE(r.valid_to), '9999-12-31')
+</pre>
+
+**Problem:** dbt Snapshots are forward-looking — they capture dimension state from the moment the snapshot first runs. This project's snapshots were initialized after 14 months of transactional history already existed. With all 4,907 orders dated between April 2025 and May 2026 and the earliest snapshot `valid_from` at May 2026, every temporal join returns NULL. The analytics layer was silently empty for representatives and products.
+
+**Decision:** The analytics views were updated to join on the **current dimension record** (`is_current = true`) as a deliberate fallback:
+
+<pre style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; overflow-x: auto; line-height: 1.5;">
+-- vw_reps_performance_base.sql
+JOIN dim_sales_representative rep
+    ON f.cd_sales_representative = rep.cd_sales_representative
+    AND rep.is_current = true
+</pre>
+
+To enable this join without losing the surrogate key columns, `fct_orders` was extended with **degenerate natural keys**:
+
+| Column | Role |
+|---|---|
+| `sk_customer_version` | SCD2 surrogate — resolves temporal state when snapshot covers the order date |
+| `cd_customer` | Natural key — enables fallback join to current dimension record |
+
+> **Trade-off:** Historical orders reflect the *current* dimension state, not the state at order time. This is factually correct for this dataset because no representative or product attribute changed during the covered collection periods. As snapshot coverage extends forward, new orders will resolve through temporal joins automatically — no model changes required.
+
+---
+
 ## 🚀 Decoupled Serverless Orchestration
 
 To maintain a **Zero-Cost Infrastructure** blueprint, the orchestration workflow is fully decentralized:

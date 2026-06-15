@@ -2,7 +2,7 @@ with sales_agg as (
     select
         col.collection_name,
         sum(f.vl_original_total) as total_sales,
-        count(distinct f.sk_customer_version) as total_customers
+        count(distinct f.cd_customer) as total_customers
     from {{ ref('fct_orders') }} f
     join {{ ref('dim_collection') }} col 
         on f.sk_collection_version = col.sk_collection_version

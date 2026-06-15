@@ -7,7 +7,8 @@
       "data_type": "date",
       "granularity": "day"
     },
-    cluster_by=["sk_customer_version", "sk_product_version", "sk_sales_representative_version"]
+    cluster_by=["sk_customer_version", "sk_product_version", "sk_sales_representative_version"],
+    partition_expiration_days=3650
 ) }}
 
 with item_sales as (

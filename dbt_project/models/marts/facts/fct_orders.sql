@@ -5,7 +5,8 @@
       "data_type": "date",
       "granularity": "day"
     },
-    cluster_by=["sk_customer_version", "sk_sales_representative_version"]
+    cluster_by=["sk_customer_version", "sk_sales_representative_version"],
+    partition_expiration_days=3650
 ) }}
 
 with orders as (
@@ -36,6 +37,8 @@ final_join as (
         col.sk_collection_version,
         cal.sk_time_version,
         f.cd_order,
+        f.cd_customer,
+        f.cd_sales_representative,
         f.vl_original_total,
         f.nm_status,
         f.dt_issued,
