@@ -11,7 +11,7 @@ This section details how the data platform achieves full automation under an **A
 
 ## Pipeline Overview
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │  Triggers: push → main  │  workflow_dispatch  │  cron 07:00 BRT │
 └──────────────┬──────────────────────────────────────────────────┘

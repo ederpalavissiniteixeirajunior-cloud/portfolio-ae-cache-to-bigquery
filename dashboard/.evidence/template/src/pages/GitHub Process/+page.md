@@ -11,7 +11,7 @@ This section details how the data platform achieves full automation under an **A
 
 ## Pipeline Overview
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │  Triggers: push → main  │  workflow_dispatch  │  cron 07:00 BRT │
 └──────────────┬──────────────────────────────────────────────────┘
@@ -56,7 +56,7 @@ jobs:
       - name: Create dbt profiles.yml
         run: |
           mkdir -p ~/.dbt
-          cat <<EOF > ~/.dbt/profiles.yml
+          cat &lt;&lt;EOF > ~/.dbt/profiles.yml
           portfolio_ae:
             target: prod
             outputs:

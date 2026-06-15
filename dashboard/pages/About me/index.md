@@ -51,7 +51,7 @@ This project was built to demonstrate Modern Data Stack proficiency in a fully a
 
 The data is extracted daily from a live on-premises ERP (InterSystems Caché) via a Python script running on a VPS. PII fields are anonymized in memory before leaving the server. dbt handles all transformations, testing, and documentation. Evidence.dev renders the dashboard as static files via GitHub Actions, served on GitHub Pages.
 
-Designing this system surfaced real infrastructure constraints — including a [BigQuery partition expiration behavior](/Data-Pipeline-%26-Architecture) that silently deleted historical data after every dbt run without any pipeline error. Diagnosing and resolving that issue is documented in the Architecture page.
+Designing this system surfaced real infrastructure constraints — including a BigQuery partition expiration behavior that silently deleted historical data after every dbt run without any pipeline error. Diagnosing and resolving that issue is documented in the Data Pipeline & Architecture page (sidebar).
 
 ---
 
