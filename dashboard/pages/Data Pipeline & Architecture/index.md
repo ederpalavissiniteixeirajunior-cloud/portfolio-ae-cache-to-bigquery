@@ -120,6 +120,9 @@ A data platform is only as valuable as the certainty of its metrics. To protect 
 
 dbt test results: PASS (All core contracts and referential mappings validated)
 
+> 🔍 **Explore the full data lineage, column-level documentation, and test coverage interactively:**
+> **[Open dbt Docs →](../dbt-docs/)**
+
 ---
 
 ## 🚀 Decoupled Serverless Orchestration
