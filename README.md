@@ -86,10 +86,13 @@ Three core dimensions (`customers`, `products`, `sales_representatives`) are tra
 - GitHub Actions: free tier CI/CD for public repositories
 
 ### 6. Data Quality Contracts
-20+ automated dbt tests enforcing:
+99 automated dbt tests enforcing:
 - `unique` + `not_null` on all primary keys
 - `relationships` tests validating referential integrity across all fact → dimension joins
 - `not_null` on critical measures and degenerate dimensions
+
+### 7. Production-Grade Findings: BigQuery Partition Expiration
+During development, `gold.fct_orders` contained only 247 rows despite 4,907 orders existing upstream — with no pipeline error. Root cause: BigQuery's `default_partition_expiration_ms` counts from the **partition key value** (`dt_issued`), not the partition creation timestamp. A partition for `dt_issued = 2025-04-01` written today is already expired. Fixed by overriding the 60-day dataset default at the dbt model level via `partition_expiration_days=3650` in the config block — which injects a BigQuery `OPTIONS()` clause into the table DDL. The diagnostic, full root cause analysis, and resolution are documented in the [Data Pipeline & Architecture](https://ederpalavissiniteixeirajunior-cloud.github.io/portfolio-ae-cache-to-bigquery/Data-Pipeline-&-Architecture) page.
 
 ---
 
@@ -196,7 +199,9 @@ npm run dev
 
 ## About
 
-Built by **Eder Palavissini Jr.** — BI Manager & Senior Analytics Engineer with 5+ years delivering data platforms across retail, fashion, and e-commerce.
+Built by **Eder Palavissini Jr.** — Senior Analytics Engineer & BI Manager with 5+ years building data platforms across fashion retail and fintech.
+
+Currently working as **Senior Analytics Engineer** at HUBXP and as **Analytics Lead** at KE Showroom & Licensing. Previous roles: Senior Planning Analyst at Vivensis (Databricks / Apache Spark) and Control Desk Lead at Webhelp.
 
 - **LinkedIn:** [linkedin.com/in/ederpalavissiniteixeirajunior](https://www.linkedin.com/in/ederpalavissiniteixeirajunior)
 - **GitHub:** [github.com/ederpalavissiniteixeirajunior-cloud](https://github.com/ederpalavissiniteixeirajunior-cloud)
