@@ -56,7 +56,7 @@ jobs:
       - name: Create dbt profiles.yml
         run: |
           mkdir -p ~/.dbt
-          cat <<EOF > ~/.dbt/profiles.yml
+          cat &lt;&lt;EOF > ~/.dbt/profiles.yml
           portfolio_ae:
             target: prod
             outputs:

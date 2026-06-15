@@ -46,8 +46,8 @@ sources:
     config:
       loaded_at_field: extracted_at
       freshness:
-        warn_after:  {count: 25, period: hour}
-        error_after: {count: 49, period: hour}
+        warn_after:  &#123;count: 25, period: hour&#125;
+        error_after: &#123;count: 49, period: hour&#125;
     tables:
       - name: clientes
         columns:
