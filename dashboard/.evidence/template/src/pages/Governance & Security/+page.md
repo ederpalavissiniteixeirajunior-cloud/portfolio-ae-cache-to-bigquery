@@ -36,44 +36,58 @@ def mask_edge_payload(df_raw: pd.DataFrame) -> pd.DataFrame:
 
 Pipeline resilience is guaranteed through programmatic assertions executed during compilation and execution cycles. Every database entity is bound to semantic contracts, preventing operational anomalies from corrupting analytical marts.
 
-### Staging Validation Rules
+### Source Freshness Monitoring
 <pre><code class="language-yaml">
-# models/staging/stg_customers.yml
-version: 2
-
-models:
-  - name: stg_customers
-    description: "Conformed customer profiles with pseudonymized fields."
-    columns:
-      - name: customer_id
-        tests:
-          - unique
-          - not_null
-      - name: document_status
-        tests:
-          - accepted_values:
-              values: ['VALID', 'INVALID']
+# models/staging/sources.yml
+sources:
+  - name: raw_cache
+    database: portfolio-ae-vendas
+    schema: raw
+    config:
+      loaded_at_field: extracted_at
+      freshness:
+        warn_after:  {count: 25, period: hour}
+        error_after: {count: 49, period: hour}
+    tables:
+      - name: clientes
+        columns:
+          - name: codCliente
+            data_tests:
+              - not_null
+          - name: extracted_at
+            data_tests:
+              - not_null
 </code></pre>
 
 ### Dimensional Integrity Rules
 <pre><code class="language-yaml">
-# models/marts/fct_orders.yml
-version: 2
-
+# models/marts/facts/schema.yml
 models:
   - name: fct_orders
-    description: "Granular sales performance transaction matrix mapped from legacy operational blocks."
     columns:
       - name: sk_order_version
-        tests:
+        data_tests:
           - unique
           - not_null
+
       - name: sk_customer_version
-        tests:
-          - not_null
+        description: >
+          NULL when no SCD Type 2 snapshot covers the order date (temporal gap).
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
           - relationships:
-              to: ref('dim_customers')
-              field: sk_customer_version
+              arguments:
+                to: ref('dim_customers')
+                field: sk_customer_version
+
+  - name: fct_order_items
+    columns:
+      - name: sk_order_item
+        data_tests:
+          - unique
+          - not_null
 </code></pre>
 
 ---

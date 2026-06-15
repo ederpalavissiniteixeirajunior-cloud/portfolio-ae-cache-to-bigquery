@@ -12,8 +12,8 @@ collection_info as (
         sk_collection_version,
         collection_name,
         min(start_date) as start_date,
-        max(end_Date) as end_Date,
-        date_diff(max(end_Date), min(start_date), day) +1 as total_days
+        max(end_date) as end_date,
+        date_diff(max(end_date), min(start_date), day) +1 as total_days
     from {{ ref('dim_collection') }}
     group by 1,2,3
 ),
@@ -23,7 +23,7 @@ target_daily_base as (
         t.id_collection,
         t.total_target / c.total_days as daily_target_value,
         c.start_date,
-        c.end_Date
+        c.end_date
     from collection_targets t
     inner join collection_info c on t.id_collection = c.id_collection
 ),
@@ -36,7 +36,7 @@ daily_series as (
         cal.dt_date
     from {{ ref('dim_calendar') }} cal
     cross join collection_info c 
-    where cal.dt_date between c.start_date and c.end_Date
+    where cal.dt_date between c.start_date and c.end_date
 ),
 
 daily_sales as (

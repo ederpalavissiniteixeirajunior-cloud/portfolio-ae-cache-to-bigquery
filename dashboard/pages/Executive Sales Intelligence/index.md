@@ -19,14 +19,20 @@ group by collection_name
 order by min(id_collection)
 ```
 
-
+```sql latest_collection
+select collection_name
+from analytics.sales_vs_target_cumulative
+group by collection_name
+order by max(reference_date) desc
+limit 1
+```
 
 <ButtonGroup 
     data={options} 
     name=collection_selector 
     value=collection_name
     display=tabs
-    defaultValue="SPRING27"
+    defaultValue={latest_collection[0].collection_name}
 />
 
 ```sql executive_cards

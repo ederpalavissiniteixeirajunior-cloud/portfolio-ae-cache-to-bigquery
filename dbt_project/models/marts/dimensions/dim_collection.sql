@@ -17,3 +17,4 @@ final as (
 )
 
 select * from final
+where start_date is not null

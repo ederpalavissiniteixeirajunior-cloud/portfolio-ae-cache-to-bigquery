@@ -324,7 +324,7 @@ models:
           - not_null
 
   - name: dim_collection
-    description: "Collection dimension representing seasonal product campaigns. Each record defines a named commercial collection with its operational date window and links to the prior-year equivalent collection for year-over-year comparative analysis."
+    description: "Collection dimension representing seasonal product campaigns with defined date windows. Collections predating the ERP integration (no start_date/end_date) are excluded — they existed before orders were recorded in the system and have no associated transactions."
     columns:
       # --- Primary Key ---
       - name: sk_collection_version

@@ -46,6 +46,7 @@ declare module '$env/static/private' {
 	export const NODE_OPTIONS: string;
 	export const PS1: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
+	export const DBT_BRAND_SCOPE: string;
 	export const npm_config_userconfig: string;
 	export const npm_config_local_prefix: string;
 	export const VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
@@ -56,6 +57,7 @@ declare module '$env/static/private' {
 	export const _: string;
 	export const npm_config_prefix: string;
 	export const npm_config_npm_version: string;
+	export const CLAUDE_CODE_SSE_PORT: string;
 	export const XDG_SESSION_CLASS: string;
 	export const TERM: string;
 	export const XDG_SESSION_ID: string;
@@ -142,6 +144,7 @@ declare module '$env/dynamic/private' {
 		NODE_OPTIONS: string;
 		PS1: string;
 		VSCODE_GIT_ASKPASS_NODE: string;
+		DBT_BRAND_SCOPE: string;
 		npm_config_userconfig: string;
 		npm_config_local_prefix: string;
 		VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
@@ -152,6 +155,7 @@ declare module '$env/dynamic/private' {
 		_: string;
 		npm_config_prefix: string;
 		npm_config_npm_version: string;
+		CLAUDE_CODE_SSE_PORT: string;
 		XDG_SESSION_CLASS: string;
 		TERM: string;
 		XDG_SESSION_ID: string;

@@ -52,11 +52,12 @@ final_join as (
         p.sk_product_version, 
         
         -- Degenerate Dimensions
-        i.cd_order, 
-        i.cd_product, 
-        h.cd_customer, 
-        h.cd_sales_representative, 
-        i.cd_company, 
+        i.cd_order,
+        i.cd_product,
+        i.nr_item_sequence,
+        h.cd_customer,
+        h.cd_sales_representative,
+        i.cd_company,
         
         -- Dates
         h.dt_issued, 
@@ -86,7 +87,7 @@ final_join as (
     inner join order_header h
         on i.cd_order = h.cd_order
         {% if is_incremental() %}
-        and h.dt_issued >= date_sub(current_date(), interval 3 day)
+        and h.dt_issued >= date_sub(current_date(), interval 7 day)
         {% endif %}
         
     left join dim_customers c

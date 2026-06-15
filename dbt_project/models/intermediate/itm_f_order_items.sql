@@ -5,12 +5,13 @@ with staging as (
 simplified as (
     select
         -- Surrogate Key
-        {{ dbt_utils.generate_surrogate_key(['cd_order', 'cd_product']) }} as sk_order_item,
-        
+        {{ dbt_utils.generate_surrogate_key(['cd_order', 'cd_product', 'nr_item_sequence']) }} as sk_order_item,
+
         -- Business Keys
         cd_order,
         cd_product,
         cd_company,
+        nr_item_sequence,
         
         -- Analytical Quantities
         qt_ordered,
