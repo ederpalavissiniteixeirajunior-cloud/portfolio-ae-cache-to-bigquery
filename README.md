@@ -203,6 +203,6 @@ Built by **Eder Palavissini Jr.** — Senior Analytics Engineer & BI Manager wit
 
 Currently working as **Senior Analytics Engineer** at HUBXP and as **Analytics Lead** at KE Showroom & Licensing. Previous roles: Senior Planning Analyst at Vivensis (Databricks / Apache Spark) and Control Desk Lead at Webhelp.
 
-- **LinkedIn:** [linkedin.com/in/ederpalavissiniteixeirajunior](https://www.linkedin.com/in/ederpalavissiniteixeirajunior)
+- **LinkedIn:** [linkedin.com/in/ederpalavissiniteixeirajunior](linkedin.com/in/eder-palavissini)
 - **GitHub:** [github.com/ederpalavissiniteixeirajunior-cloud](https://github.com/ederpalavissiniteixeirajunior-cloud)
 - **Email:** ederpalavissiniteixeirajunior@gmail.com
